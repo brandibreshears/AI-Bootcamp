@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad-Hoc Member Invoicing — Product Brief</title>
+<style>
+  :root {
+    --blue: #1a56db;
+    --green: #057a55;
+    --yellow: #c27803;
+    --red: #c81e1e;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--gray-900); background: #fff; line-height: 1.5; }
+  .page { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  h2 { font-size: 16px; font-weight: 700; margin: 28px 0 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--blue); border-bottom: 2px solid var(--gray-200); padding-bottom: 4px; }
+  h3 { font-size: 14px; font-weight: 600; margin: 14px 0 6px; }
+  p { margin-bottom: 8px; color: var(--gray-700); }
+
+  .meta { font-size: 12px; color: #6b7280; margin-bottom: 24px; }
+  .meta span { margin-right: 16px; }
+
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
+  .pill-red    { background: #fee2e2; color: var(--red); }
+  .pill-yellow { background: #fef3c7; color: var(--yellow); }
+  .pill-green  { background: #d1fae5; color: var(--green); }
+  .pill-blue   { background: #dbeafe; color: var(--blue); }
+
+  /* 2-column grid */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  @media(max-width:640px){ .grid2 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 14px 16px; }
+  .card h3 { margin-top: 0; }
+
+  /* Workflow strip */
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .flow-step { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--blue); position: relative; }
+  .flow-step + .flow-step::before { content: "→"; position: absolute; left: -14px; color: #9ca3af; font-size: 13px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 13px; }
+  th { background: var(--gray-100); text-align: left; padding: 7px 10px; font-weight: 600; border: 1px solid var(--gray-200); }
+  td { padding: 6px 10px; border: 1px solid var(--gray-200); vertical-align: top; color: var(--gray-700); }
+  tr:nth-child(even) td { background: var(--gray-50); }
+
+  /* Lists */
+  ul { padding-left: 18px; margin: 4px 0 10px; color: var(--gray-700); }
+  li { margin-bottom: 4px; }
+
+  /* Risk / open-question rows */
+  .issue-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--gray-200); }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-label { min-width: 120px; font-weight: 600; font-size: 12px; }
+
+  .alert { border-radius: 6px; padding: 10px 14px; margin: 8px 0; }
+  .alert-red    { background: #fef2f2; border: 1px solid #fecaca; color: #7f1d1d; }
+  .alert-yellow { background: #fffbeb; border: 1px solid #fde68a; color: #78350f; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Ad-Hoc Member Invoicing</h1>
+  <div class="meta">
+    <span><strong>Driver:</strong> Brandi Breshears</span>
+    <span><strong>Approver:</strong> Colleen Spicher</span>
+    <span><strong>Last updated:</strong> Jun 18, 2026</span>
+    <span><strong>Status:</strong> <span class="pill pill-yellow">In Design</span></span>
+  </div>
+
+  <!-- ─── PROBLEM ─────────────────────────────── -->
+  <h2>Problem</h2>
+  <div class="alert alert-red">
+    <strong>Security risk:</strong> Billing team currently uses <em>Clover</em>, a legacy tool with no active contract, to generate ad-hoc member invoices. This creates security exposure and must be decommissioned.
+  </div>
+  <ul>
+    <li>Manual invoice creation is slow, error-prone, and spread across multiple systems.</li>
+    <li>No formal approval workflow or audit trail exists today.</li>
+    <li>Scope spans Care at Home, Cancer COE, Chemo/Radiation, Ortho consults, Telehealth mis-charges, and misc. M&amp;I reimbursements — none handled inside Primetime.</li>
+    <li>Accumulator data exists in Orbit but is not surfaced during invoice creation, causing inaccurate cost-share amounts.</li>
+  </ul>
+
+  <!-- ─── SOLUTION SUMMARY ─────────────────────── -->
+  <h2>Solution in One Paragraph</h2>
+  <p>Build a unified ad-hoc invoicing flow <strong>inside Primetime</strong> that lets the billing team search for a member, choose an invoice type (Cost Share or Recoupment), enter invoice details, run an accumulator check, submit for approval, and trigger a Stripe payment link — all without leaving the tool. Replace Clover entirely. Extend the existing billable-event state machine with new Draft / Pending Approval / Correction Required states. Route payments through the correct Stripe account per encounter type and push to Netsuite where applicable.</p>
+
+  <!-- ─── TWO TEMPLATE TYPES ─────────────────────── -->
+  <h2>Two Invoice Types</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Member Cost Share</h3>
+      <p>Collect money <em>owed by member</em> for a care event. Requires accumulator check against Orbit to determine actual dollar amount.</p>
+      <ul>
+        <li>Encounter Type (Care@Home, COE, Chemo, Radiation, Ortho, Telehealth, Surgery, Other)</li>
+        <li>Maximum Member Cost → adjusted after accum check</li>
+        <li>Copay / Coinsurance / Differential DED (manual if no config)</li>
+        <li>Service Date, Due Date, Case Rate, Case Number (situational)</li>
+        <li>EOB fields when Surgery EOB policy flag is On</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Member Recoupment</h3>
+      <p>Claw back an overpayment <em>made to member</em> (e.g., cancelled surgery M&amp;I). <strong>No accumulator check.</strong></p>
+      <ul>
+        <li>Encounter Type (same dropdown)</li>
+        <li>Member Repayment Amount (fixed, no calculation)</li>
+        <li>Service Date, Due Date, Case Number (situational)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── 10-STEP WORKFLOW ─────────────────────── -->
+  <h2>Workflow (10 Steps)</h2>
+  <div class="flow">
+    <div class="flow-step">1. Member Search</div>
+    <div class="flow-step">2. Invoice Type + Encounter</div>
+    <div class="flow-step">3. Invoice Details</div>
+    <div class="flow-step">4. Accum Check (Cost Share only)</div>
+    <div class="flow-step">5. Review &amp; Submit</div>
+    <div class="flow-step">6. Approval Queue</div>
+    <div class="flow-step">7. Approve / Reject</div>
+    <div class="flow-step">8. Invoice Sent to Member</div>
+    <div class="flow-step">9. Stripe Payment</div>
+    <div class="flow-step">10. Receipt + Payment History</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Step</th><th>Key Behavior</th><th>State Machine</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Member Search</td><td>Reuse existing legacy GQL resolver (handles TC4TC auth). Add billing + billing-management roles.</td><td>—</td></tr>
+      <tr><td>2 · Type &amp; Encounter</td><td>Select Cost Share vs Recoupment → sub-category. Collect <strong>Date of Service</strong> here (needed for accum config lookup). Assign Invoice Reference Number.</td><td><code>invoice_draft</code> created</td></tr>
+      <tr><td>3 · Invoice Details</td><td>Title, description, case rate, due date. Draft saves incrementally (empty fields don't overwrite).</td><td><code>invoice_draft</code> persists</td></tr>
+      <tr><td>4A · Accum Check</td><td>Cost Share: call Orbit; surface accum status. Allow manual override with reason. Recoupment: bypass entirely — use FixedCost EncounterRule.</td><td>→ <code>pre_calculated</code></td></tr>
+      <tr><td>5 · Review &amp; Submit</td><td>Show full calculated billable event. Allow recalculate or back-edit. Submit records <code>SubmittedBy</code> in metadata.</td><td>→ <code>invoice_pending_approval</code></td></tr>
+      <tr><td>6–7 · Approval</td><td>Approver ≠ submitter. Management-only role for approval. Full team gets read-only view. Options: Approve / Adjustment Required (returns to creator) / Discard. $0 invoices auto-skip approval.</td><td>→ <code>invoice_approved</code> or <code>invoice_correction_required</code></td></tr>
+      <tr><td>8 · Send to Member</td><td>App-registered: existing PHI PDF template. Non-app: MFA (DOB gate) or no-PHI PDF or direct Stripe link (decision TBD). Appears in Member App unpaid section.</td><td>→ <code>issued_invoice</code></td></tr>
+      <tr><td>9–10 · Payment &amp; Receipt</td><td>Stripe payment intent generated on member action. Webhook fires <code>mark_invoice_paid</code>. Receipt sent. Transaction moves to paid history in both apps.</td><td>→ <code>paid</code></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ─── STRIPE & NETSUITE ROUTING ────────────── -->
+  <h2>Stripe &amp; Netsuite Routing</h2>
+  <table>
+    <thead><tr><th>Encounter Type</th><th>Stripe Account</th><th>Netsuite Push</th></tr></thead>
+    <tbody>
+      <tr><td>Care at Home</td><td>Surgery Stripe</td><td>Yes — Cost Share Utilization Invoice Type</td></tr>
+      <tr><td>Orthopedic Consultations</td><td>Surgery Stripe</td><td>Yes — Cost Share Utilization Invoice Type</td></tr>
+      <tr><td>Cancer COE / Chemo / Radiation</td><td>Surgery Stripe</td><td>Yes — same as COE today</td></tr>
+      <tr><td>Surgery</td><td>Surgery Stripe</td><td>Yes — same as Surgery today</td></tr>
+      <tr><td>Other</td><td>Surgery Stripe</td><td>Yes — same as Surgery today</td></tr>
+      <tr><td><strong>Telehealth</strong></td><td>Legacy 98.6 TH Stripe</td><td><strong>No</strong></td></tr>
+      <tr><td>Member Recoupment</td><td>Surgery Stripe</td><td>Yes — Bill Credit Invoice Type</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ─── PRIMETIME UI CHANGES ────────────────── -->
+  <h2>Primetime UI Changes Required</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Member Payments List View</h3>
+      <ul>
+        <li>Add <strong>Invoice Category</strong> column</li>
+        <li>New <strong>Approval</strong> tab (filterable by type, submitter, status)</li>
+        <li>Fix existing broken search/filter (coordinate with existing ticket)</li>
+        <li>Deprecate old Surgery-only "Generate Invoice" button</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Invoice Creation Flow (New)</h3>
+      <ul>
+        <li>Member search modal (reuse Compass/Member Support pattern)</li>
+        <li>Type + encounter selector with conditional fields</li>
+        <li>Accumulator status widget (with manual override)</li>
+        <li>Review screen with approve / recalculate / discard actions</li>
+        <li>Read-only approval queue view for non-approvers</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── STATE MACHINE DELTA ──────────────────── -->
+  <h2>State Machine — New States &amp; Transitions</h2>
+  <table>
+    <thead><tr><th>New State</th><th>Entry Transition</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>invoice_draft</code></td><td><code>save_draft_invoice</code> (from Begin, or self-loop)</td><td>Also re-enters from <code>pre_calculated</code> / <code>invoice_pending_approval</code> to allow edits</td></tr>
+      <tr><td><code>invoice_pending_approval</code></td><td><code>submit_invoice_for_approval</code> from <code>pre_calculated</code></td><td>Ad-hoc only. Reuses <code>approve_invoice</code> for exit, but approver ≠ submitter enforced</td></tr>
+      <tr><td><code>invoice_correction_required</code></td><td><code>reject_invoice</code> from <code>invoice_pending_approval</code></td><td>Stores <code>CorrectionReason</code> in metadata</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Key rule:</strong> <code>approve_invoice</code> must be <em>blocked</em> from <code>pre_calculated</code> for all ad-hoc external encounter sources (it must go through Pending Approval). Surgery CRM flow unaffected.</p>
+
+  <!-- ─── OPEN QUESTIONS ───────────────────────── -->
+  <h2>Open Questions &amp; Risks</h2>
+
+  <div class="alert alert-yellow">
+    <strong>Non-app member invoicing decision is unresolved</strong> — MFA gate, no-PHI PDF, or direct Stripe link. This impacts PDF templates, Braze campaigns, and email copy. Must decide before Member-facing work begins.
+  </div>
+
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-red">Blocker</span></div>
+    <div>Netsuite scripts: do they work without a Salesforce case number? Ad-hoc invoices for Care@Home/Ortho/etc. have no SF ID. Needs Netsuite team confirmation before <code>generate_invoice</code> transition can be completed.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-yellow">Decision</span></div>
+    <div>TC4TC permissions on approval queue — should surgery invoice screens also be gated? (Currently they may not be.) Align with existing surgery permissions before building approval UI.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-yellow">Decision</span></div>
+    <div>Should the submitter be able to self-reject / retract a pending-approval invoice? Workflow doc says no same-person approval, but self-retract is a usability gap.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-blue">TBD</span></div>
+    <div>What identifier (if not Case Number) ties ad-hoc invoices to Netsuite records? "Invoice Reference Number" is proposed — needs naming alignment with finance.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-blue">TBD</span></div>
+    <div>Split-CC (split credit card across two cards for surgery + ad-hoc) explicitly deferred to post-MVP. Confirm Stripe supports it for future planning.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-blue">TBD</span></div>
+    <div>Prior-year billing: must handle members who terminated coverage. Invoice for 2025 service sent in Jan 2026 needs coverage-period validation, not just current eligibility.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-green">Scoped out</span></div>
+    <div>New PDF templates for ad-hoc (non-surgery) invoice types — separate ticket. MVP uses recycled Surgery template for app-registered users only.</div>
+  </div>
+
+  <!-- ─── PROTOTYPE CHECKLIST ──────────────────── -->
+  <h2>Prototype Checklist (Tomorrow)</h2>
+  <table>
+    <thead><tr><th>#</th><th>Screen / Component</th><th>Key Fields to Show</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Member Search Modal</td><td>Name, DOB, Member ID, Plan</td><td>Reuse Compass pattern — don't redesign</td></tr>
+      <tr><td>2</td><td>Invoice Type Selector</td><td>Cost Share vs Recoupment radio; Encounter Type dropdown; Date of Service; Invoice Reference #</td><td>Date of Service <em>must</em> appear here, not Step 3</td></tr>
+      <tr><td>3</td><td>Invoice Details Form</td><td>Title, Description, Case Rate, Due Date; conditional EOB fields (Facility Name, Service Description)</td><td>Show/hide EOB section based on flag state</td></tr>
+      <tr><td>4</td><td>Accumulator Status Panel</td><td>Orbit accum read-out; Manual Override toggle (Copay, Coinsurance, Differential DED + reason field)</td><td>Recoupment path skips this screen entirely</td></tr>
+      <tr><td>5</td><td>Review &amp; Submit Screen</td><td>All collected data read-only; calculated member cost; Recalculate + Submit + Discard actions</td><td>Show <code>SubmittedBy</code> label here for audit context</td></tr>
+      <tr><td>6</td><td>Approval Queue Tab</td><td>List of pending invoices (type, submitter, amount, date); Approve / Adjustment Required / Discard actions; read-only mode for non-approvers</td><td>Filter by encounter category, status, submitter</td></tr>
+      <tr><td>7</td><td>Member Payments List (updated)</td><td>Add Invoice Category column; show approval status badge</td><td>Keep existing columns; insert new ones</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:12px;color:#9ca3af;margin-top:32px;">Generated from: Ad-Hoc Invoice Workflow and Templates · Technical Design for Ad-Hoc Invoicing · PRD — Member Ad-Hoc Invoicing · June 22 2026</p>
+</div>
+</body>
+</html>
