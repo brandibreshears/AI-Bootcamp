@@ -80,18 +80,21 @@
   <!-- ─── PROBLEM ─────────────────────────────── -->
   <h2>Problem</h2>
   <div class="alert alert-red">
-    <strong>Security risk:</strong> Billing team currently uses <em>Clover</em>, a legacy tool with no active contract, to generate ad-hoc member invoices. This creates security exposure and must be decommissioned.
+    <strong>Two security risks, not one:</strong> (1) Billing team uses <em>Clover</em> (no active contract) for ad-hoc invoices. (2) Surgery invoices today send a raw Stripe payment link — no auth gate — so any person with the link can pay it. CSS has accidentally sent the wrong link to the wrong member, causing payment mis-attribution, broken accumulators, and manual remediation across Primetime, Stripe, and Netsuite.
   </div>
   <ul>
     <li>Manual invoice creation is slow, error-prone, and spread across multiple systems.</li>
     <li>No formal approval workflow or audit trail exists today.</li>
     <li>Scope spans Care at Home, Cancer COE, Chemo/Radiation, Ortho consults, Telehealth mis-charges, and misc. M&amp;I reimbursements — none handled inside Primetime.</li>
     <li>Accumulator data exists in Orbit but is not surfaced during invoice creation, causing inaccurate cost-share amounts.</li>
+    <li>~⅓ of Surgery invoicing routes through Clover today specifically because members want to split payment across two cards — no native path exists.</li>
+    <li>Non-app registered members with a UUID have no secure self-service payment path.</li>
   </ul>
 
   <!-- ─── SOLUTION SUMMARY ─────────────────────── -->
   <h2>Solution in One Paragraph</h2>
-  <p>Build a unified ad-hoc invoicing flow <strong>inside Primetime</strong> that lets the billing team search for a member, choose an invoice type (Cost Share or Recoupment), enter invoice details, run an accumulator check, submit for approval, and trigger a Stripe payment link — all without leaving the tool. Replace Clover entirely. Extend the existing billable-event state machine with new Draft / Pending Approval / Correction Required states. Route payments through the correct Stripe account per encounter type and push to Netsuite where applicable.</p>
+  <p><strong>Admin side (Primetime):</strong> Build a unified ad-hoc invoicing flow inside Primetime — member search → invoice type → details → accum check → approval queue → issue. Replace Clover. Extend the state machine with Draft / Pending Approval / Correction Required states.</p>
+  <p><strong>Member side (Member App + web):</strong> Replace raw Stripe links with a single static URL (<code>transcarent.com/profile/me/invoice</code>). Identity-gate payment — member's verified UUID determines what invoice they see, not which link they followed. Works for app-registered and non-app members with a UUID alike.</p>
 
   <!-- ─── TWO TEMPLATE TYPES ─────────────────────── -->
   <h2>Two Invoice Types</h2>
@@ -161,6 +164,91 @@
       <tr><td>Member Recoupment</td><td>Surgery Stripe</td><td>Yes — Bill Credit Invoice Type</td></tr>
     </tbody>
   </table>
+
+  <!-- ─── FIGMA MOCKUP ─────────────────────────── -->
+  <h2>Figma Mockup — What Exists Today</h2>
+  <p style="color:#6b7280;font-size:12px;margin-bottom:8px;">Node 6:1410 · Primetime – Billing 2026 · <a href="https://www.figma.com/design/I9TGhDivO1s5hUWR4Su4JB/Primetime---Billing--2026-?node-id=6-1410" style="color:#1a56db;">Open in Figma</a> · Status: incomplete mockup</p>
+  <img src="figma-member-payments.png" alt="Figma mockup: Member Payments list with Pending approval tab active" style="width:100%;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:12px;" />
+
+  <div class="grid2" style="margin-top:8px;">
+    <div class="card">
+      <h3>What's already designed</h3>
+      <ul>
+        <li>Nav tabs: Drafts, Surgery – Not Issued, <strong>Pending Approval</strong> (active), Active, Disabled, Paid, View All</li>
+        <li>Filter chips: Invoice Category, Client, Invoice State</li>
+        <li>New columns: Dependent?, App?, Invoice Category, Encounter Date, Case Rate, Invoice Status</li>
+        <li>Status badges: Pending Approval, Not Calculated, Draft, Correction Required</li>
+        <li>Date range + search bar controls</li>
+        <li>"Generate Invoice" CTA button (purple)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Gaps — not yet in Figma</h3>
+      <ul>
+        <li>Invoice creation flow (Steps 1–5 wizard)</li>
+        <li>Accumulator status panel + manual override</li>
+        <li>Approval detail / action screen</li>
+        <li>Member-facing payment page (<code>/profile/me/invoice</code>)</li>
+        <li>Non-app identity verification flow</li>
+        <li>Multiple-invoice handling layout (sequential vs. simultaneous — design decision open)</li>
+        <li>Post-payment app registration prompt</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── MEMBER-FACING PAYMENT EXPERIENCE ─────── -->
+  <h2>Member-Facing Payment Experience (New)</h2>
+  <div class="alert alert-yellow">
+    <strong>Architecture shift:</strong> Today Surgery uses a raw Stripe-hosted link (no auth). New model is a single static URL — member's identity resolves the invoice. No member-specific link is ever generated or emailed.
+  </div>
+
+  <h3>Single Static URL</h3>
+  <p><code>transcarent.com/profile/me/invoice</code> — same for every member, every invoice type. Billing team can share it freely without risk of routing to the wrong person. Invoice is retrieved based on who you are, not what link you followed.</p>
+  <p><strong>Scope:</strong> Members with a Transcarent UUID only. Members without a UUID must be invoiced manually via the Stripe portal (out of scope).</p>
+
+  <h3>Two Authentication Paths</h3>
+  <div class="grid2">
+    <div class="card">
+      <h3>App-Registered Member</h3>
+      <ul>
+        <li>Lands at URL, logs in with existing TC credentials</li>
+        <li>UUID resolves → outstanding invoices retrieved</li>
+        <li>Sees invoice label (e.g. "Ortho Consult Member Cost Share"), amount, and <strong>PDF viewable pre-payment</strong></li>
+        <li>Post-payment: receipt PDF downloadable; history in app</li>
+        <li>Can also reach via in-app Payments section (existing path continues)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Non-App Member (UUID required)</h3>
+      <ul>
+        <li>Lands at URL, completes lightweight identity verification (1FA or 2FA — TBD with Identity team)</li>
+        <li>UUID resolves → outstanding invoices retrieved</li>
+        <li>Sees generic label ("Invoice 1"), amount, and card entry only — <strong>no PHI/PII displayed</strong></li>
+        <li>No app download required before or during payment</li>
+        <li>Post-payment: prompt to complete app registration; receipt available after</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>PHI Rules by Context</h3>
+  <table>
+    <thead><tr><th>Context</th><th>PHI/PII shown</th><th>Invoice PDF</th><th>Receipt PDF</th></tr></thead>
+    <tbody>
+      <tr><td>Non-app member — payment screen</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr><td>Non-app member — post-payment</td><td>No</td><td>No</td><td>No (available after registration)</td></tr>
+      <tr><td>App-authenticated — invoice screen</td><td>Via PDF only</td><td>Yes — viewable &amp; downloadable</td><td>Yes — after payment</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Multiple Invoice Handling</h3>
+  <ul>
+    <li><strong>1 invoice:</strong> Land directly on payment screen.</li>
+    <li><strong>2 invoices:</strong> Both surfaced — layout TBD (sequential vs. simultaneous — design decision open). Each has its own card entry form and Pay button; card details must be re-entered per invoice (Stripe constraint: can't apply one entry to multiple payment intents).</li>
+    <li><strong>3+ invoices (edge case):</strong> Show 2 oldest-due-date invoices. Display notice to contact support. Billing team alerted for manual handling.</li>
+  </ul>
+
+  <h3>Split Card Payments</h3>
+  <p>Not self-service. Member must contact CSS/Member Support. Billing team cancels original invoice and creates two new ad-hoc invoices in the requested amounts, issued through the standard flow.</p>
 
   <!-- ─── PRIMETIME UI CHANGES ────────────────── -->
   <h2>Primetime UI Changes Required</h2>
@@ -234,6 +322,28 @@
     <div>New PDF templates for ad-hoc (non-surgery) invoice types — separate ticket. MVP uses recycled Surgery template for app-registered users only.</div>
   </div>
 
+  <h3 style="margin-top:16px;">Member-Facing Open Questions</h3>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-red">Blocker</span></div>
+    <div><strong>1FA vs 2FA for non-app auth:</strong> What factors are used? Skip Big 4 and go straight to a challenge question (e.g. DOB, SSN last 4)? Is 1FA sufficient to initiate payment, or is 2FA required before any payment can process? Owner: Brandi / Identity / Legal.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-yellow">Decision</span></div>
+    <div><strong>Multi-invoice layout:</strong> Sequential (Invoice 1 loads first; Invoice 2 loads after Invoice 1 is paid) or simultaneous (both on the same page)? Design team to decide before build. Either approach requires separate card entry per invoice.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-yellow">Decision</span></div>
+    <div><strong>Identity team's mechanism</strong> for UUID-bound guest auth and UUID pre-association at registration. Needed before non-app member flow can be scoped for eng.</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-blue">TBD</span></div>
+    <div>Terminated member with outstanding prior-year invoice — how does the invoice screen handle a member whose coverage has ended but a 2025 invoice is still outstanding?</div>
+  </div>
+  <div class="issue-row">
+    <div class="issue-label"><span class="pill pill-blue">TBD</span></div>
+    <div>Post-payment registration prompt copy: what 2–3 specific benefits should be highlighted? (Receipt PDF, payment history, care navigation?) Owner: Product / Marketing.</div>
+  </div>
+
   <!-- ─── PROTOTYPE CHECKLIST ──────────────────── -->
   <h2>Prototype Checklist (Tomorrow)</h2>
   <table>
@@ -245,11 +355,17 @@
       <tr><td>4</td><td>Accumulator Status Panel</td><td>Orbit accum read-out; Manual Override toggle (Copay, Coinsurance, Differential DED + reason field)</td><td>Recoupment path skips this screen entirely</td></tr>
       <tr><td>5</td><td>Review &amp; Submit Screen</td><td>All collected data read-only; calculated member cost; Recalculate + Submit + Discard actions</td><td>Show <code>SubmittedBy</code> label here for audit context</td></tr>
       <tr><td>6</td><td>Approval Queue Tab</td><td>List of pending invoices (type, submitter, amount, date); Approve / Adjustment Required / Discard actions; read-only mode for non-approvers</td><td>Filter by encounter category, status, submitter</td></tr>
-      <tr><td>7</td><td>Member Payments List (updated)</td><td>Add Invoice Category column; show approval status badge</td><td>Keep existing columns; insert new ones</td></tr>
+      <tr><td>7</td><td>Member Payments List (updated)</td><td>Add Invoice Category column; show approval status badge</td><td>Keep existing columns; insert new ones. <strong>Figma node 6:1410 exists</strong> — use as base</td></tr>
+      <tr><td colspan="4" style="background:#f3f4f6;font-weight:600;color:#1a56db;padding:8px 10px;">Member-Facing Screens (new — nothing in Figma yet)</td></tr>
+      <tr><td>8</td><td>Invoice Payment Page — App Member</td><td>Invoice label (named category), amount due, PDF download link, card entry fields (Name, Card #, Exp, CVC, ZIP, Country), "Pay $X" button</td><td>Same URL as non-app; app session = richer labeling + PDF access</td></tr>
+      <tr><td>9</td><td>Invoice Payment Page — Non-App Member</td><td>Generic label ("Invoice 1"), amount due, card entry fields only — <strong>no PHI/PII</strong>. Identity verification step precedes this screen.</td><td>No PDF, no invoice description. Confirm w/ Legal before finalizing</td></tr>
+      <tr><td>10</td><td>Identity Verification Screen (non-app)</td><td>DOB / challenge question input; error state; session scope note</td><td>Design with Identity team — don't prototype independently</td></tr>
+      <tr><td>11</td><td>Post-Payment Confirmation + Registration Prompt</td><td>"Your payment is complete" message; 2–3 benefit bullets; "Set up my account" CTA; "No thanks" secondary</td><td>Prompt appears AFTER confirmation — never blocks payment success message</td></tr>
+      <tr><td>12</td><td>Multiple Invoice View (2 invoices)</td><td>Two invoice cards with independent card entry; design decision: sequential or simultaneous layout</td><td>Card details must be re-entered for each invoice (Stripe constraint)</td></tr>
     </tbody>
   </table>
 
-  <p style="font-size:12px;color:#9ca3af;margin-top:32px;">Generated from: Ad-Hoc Invoice Workflow and Templates · Technical Design for Ad-Hoc Invoicing · PRD — Member Ad-Hoc Invoicing · June 22 2026</p>
+  <p style="font-size:12px;color:#9ca3af;margin-top:32px;">Generated from: Ad-Hoc Invoice Workflow and Templates · Technical Design for Ad-Hoc Invoicing · PRD — Member Ad-Hoc Invoicing · Product Brief – Surgery Invoicing &amp; Ad-Hoc In-App Payment Collection · Figma: Primetime Billing 2026 (node 6:1410) · June 22 2026</p>
 </div>
 </body>
 </html>
