@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JIRA Board Report – Platform Engineering – 2026-06-22</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 40px auto; padding: 0 24px; color: #1a1a2e; background: #f8f9fa; }
+    h1 { color: #0052cc; border-bottom: 3px solid #0052cc; padding-bottom: 8px; }
+    h2 { color: #253858; margin-top: 32px; }
+    .summary-box { background: #e3f2fd; border-left: 4px solid #0052cc; padding: 16px 20px; border-radius: 4px; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th { background: #0052cc; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 9px 12px; border-bottom: 1px solid #dee2e6; }
+    tr:nth-child(even) { background: #f1f3f5; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.78em; font-weight: 600; }
+    .badge-done { background: #e3fcef; color: #006644; }
+    .badge-progress { background: #fffae6; color: #974f0c; }
+    .badge-todo { background: #f4f5f7; color: #42526e; }
+    .badge-blocked { background: #ffebe6; color: #bf2600; }
+    ul { padding-left: 20px; }
+    li { margin: 6px 0; }
+    .open-q { background: #fff8e1; border-left: 4px solid #f6c000; padding: 12px 16px; border-radius: 4px; }
+    .actions { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 12px 16px; border-radius: 4px; }
+    footer { margin-top: 48px; font-size: 0.8em; color: #6b778c; border-top: 1px solid #dee2e6; padding-top: 12px; }
+    .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+    .stat-card { flex: 1; min-width: 120px; background: white; border-radius: 6px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+    .stat-card .value { font-size: 2em; font-weight: 700; color: #0052cc; }
+    .stat-card .label { font-size: 0.8em; color: #6b778c; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <h1>JIRA Board Report</h1>
+  <p><strong>Board:</strong> Platform Engineering &nbsp;|&nbsp; <strong>Sprint:</strong> Sprint 42 (Jun 16 – Jun 27, 2026) &nbsp;|&nbsp; <strong>Generated:</strong> 2026-06-22</p>
+
+  <h2>Executive Summary</h2>
+  <div class="summary-box">
+    Sprint 42 is at its midpoint with only <strong>10 of 46 story points completed (22%)</strong>, indicating the team is behind pace to finish the sprint.
+    The most significant risk is <strong>PLAT-105 (13 pts)</strong>, a critical DB migration blocked since June 14 pending DBA approval — this single item represents 28% of total sprint scope.
+    Additionally, <strong>PLAT-102</strong> (memory leak, Critical, 5 pts) remains in progress with no root cause identified yet.
+    Two items (PLAT-104, PLAT-107) are unstarted and may be at risk if blockers are not resolved promptly.
+    Immediate escalation of the DBA approval request is the highest-leverage action available to the team.
+  </div>
+
+  <h2>Sprint Velocity at a Glance</h2>
+  <div class="stat-row">
+    <div class="stat-card"><div class="value">46</div><div class="label">Total Points</div></div>
+    <div class="stat-card"><div class="value" style="color:#006644">10</div><div class="label">Done</div></div>
+    <div class="stat-card"><div class="value" style="color:#974f0c">13</div><div class="label">In Progress</div></div>
+    <div class="stat-card"><div class="value" style="color:#42526e">10</div><div class="label">To Do</div></div>
+    <div class="stat-card"><div class="value" style="color:#bf2600">13</div><div class="label">Blocked</div></div>
+  </div>
+
+  <h2>Key Findings</h2>
+  <ul>
+    <li><strong>22% sprint completion</strong> at midpoint (10/46 pts done); target pace should be ~50%.</li>
+    <li><strong>2 of 8 issues are Critical priority</strong> — PLAT-102 (In Progress) and PLAT-105 (Blocked).</li>
+    <li><strong>PLAT-105 has been blocked for 8+ days</strong> — DBA team approval requested June 14, no response recorded.</li>
+    <li><strong>PLAT-104 is unassigned</strong> — no owner identified for the onboarding docs task.</li>
+    <li>Alice Chen carries the highest load: 3 issues assigned (PLAT-101 done, PLAT-103 in progress, PLAT-108 done).</li>
+    <li>No story-point estimates are missing; all 8 issues have point values.</li>
+  </ul>
+
+  <h2>Issue Detail</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Issue Key</th>
+        <th>Summary</th>
+        <th>Status</th>
+        <th>Assignee</th>
+        <th>Priority</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>PLAT-101</strong></td>
+        <td>Upgrade Node.js to v22</td>
+        <td><span class="badge badge-done">Done</span></td>
+        <td>Alice Chen</td>
+        <td>High</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-102</strong></td>
+        <td>Fix memory leak in auth service</td>
+        <td><span class="badge badge-progress">In Progress</span></td>
+        <td>Bob Kim</td>
+        <td>⚠️ Critical</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-103</strong></td>
+        <td>Add rate limiting to API gateway</td>
+        <td><span class="badge badge-progress">In Progress</span></td>
+        <td>Alice Chen</td>
+        <td>High</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-104</strong></td>
+        <td>Write onboarding docs for new hires</td>
+        <td><span class="badge badge-todo">To Do</span></td>
+        <td><em>Unassigned</em></td>
+        <td>Medium</td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-105</strong></td>
+        <td>Migrate legacy DB schema</td>
+        <td><span class="badge badge-blocked">Blocked</span></td>
+        <td>Carlos Rivera</td>
+        <td>⚠️ Critical</td>
+        <td>13</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-106</strong></td>
+        <td>Set up staging environment</td>
+        <td><span class="badge badge-done">Done</span></td>
+        <td>Bob Kim</td>
+        <td>High</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-107</strong></td>
+        <td>Implement feature flags service</td>
+        <td><span class="badge badge-todo">To Do</span></td>
+        <td>Dana Patel</td>
+        <td>Medium</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td><strong>PLAT-108</strong></td>
+        <td>Security audit – dependency scan</td>
+        <td><span class="badge badge-done">Done</span></td>
+        <td>Alice Chen</td>
+        <td>High</td>
+        <td>2</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Open Questions</h2>
+  <div class="open-q">
+    <ul>
+      <li><strong>PLAT-105:</strong> Who is the DBA approver? Has there been any follow-up since the June 14 request? Is there an escalation path?</li>
+      <li><strong>PLAT-102:</strong> What debugging has been completed so far? Is a hotfix or workaround being considered for production while investigation continues?</li>
+      <li><strong>PLAT-104:</strong> Why is this unassigned? Does it need to be completed this sprint or can it be deferred?</li>
+      <li>No sprint goal was stated in the source data — unable to assess whether completed work maps to a declared objective.</li>
+    </ul>
+  </div>
+
+  <h2>Recommended Next Actions</h2>
+  <div class="actions">
+    <ol>
+      <li><strong>Escalate PLAT-105 DBA approval today.</strong> The blocker is 8+ days old; escalate to the DBA team manager and set a same-day response deadline to protect sprint delivery.</li>
+      <li><strong>Assign PLAT-104</strong> to a team member in today's standup — it is only 2 points and currently has no owner.</li>
+      <li><strong>Status check on PLAT-102:</strong> Bob Kim should share a written update on the memory leak root-cause investigation to determine if additional resources or a temporary mitigation are needed.</li>
+      <li><strong>Reassess sprint scope</strong> in today's standup given 28% of points are blocked — consider whether PLAT-107 (8 pts, To Do) is at risk and needs re-planning.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <strong>Source:</strong> sample-jira-data.txt &nbsp;|&nbsp; <strong>Report generated:</strong> 2026-06-22 &nbsp;|&nbsp; This report reflects only facts present in the source data. No information has been added or inferred beyond what was explicitly stated.
+  </footer>
+
+</body>
+</html>

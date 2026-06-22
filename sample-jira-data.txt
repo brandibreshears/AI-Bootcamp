@@ -1,0 +1,21 @@
+Sprint: Sprint 42 (Jun 16 – Jun 27, 2026)
+Board: Platform Engineering
+
+PLAT-101 | Upgrade Node.js to v22 | Done | Alice Chen | High | 3
+PLAT-102 | Fix memory leak in auth service | In Progress | Bob Kim | Critical | 5
+PLAT-103 | Add rate limiting to API gateway | In Progress | Alice Chen | High | 8
+PLAT-104 | Write onboarding docs for new hires | To Do | Unassigned | Medium | 2
+PLAT-105 | Migrate legacy DB schema | Blocked | Carlos Rivera | Critical | 13
+PLAT-106 | Set up staging environment | Done | Bob Kim | High | 5
+PLAT-107 | Implement feature flags service | To Do | Dana Patel | Medium | 8
+PLAT-108 | Security audit – dependency scan | Done | Alice Chen | High | 2
+
+Blockers noted:
+- PLAT-105 is blocked waiting on DBA team approval (requested Jun 14, no response yet)
+- PLAT-102 has a known repro case but root cause not yet identified
+
+Sprint capacity: 46 points
+Completed: 10 points (PLAT-101, PLAT-106, PLAT-108)
+In Progress: 13 points
+To Do: 10 points
+Blocked: 13 points
