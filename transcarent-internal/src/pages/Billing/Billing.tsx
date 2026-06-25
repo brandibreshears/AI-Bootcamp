@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Billing.module.css';
 import { Badge } from '../../components/ui/Badge/Badge';
 import { Button } from '../../components/ui/Button/Button';
 import { SearchIcon } from '../../components/ui/Icons';
+import { COST_SHARE_TYPE_LABELS, ENCOUNTER_SOURCE_LABELS, ADMIN_STATE_LABELS } from '../../utils/invoiceStatus';
+import { formatCents, formatOptionalCents } from '../../utils/currency';
 
 export type InvoiceStatus =
   | 'invoice_draft'
@@ -28,7 +30,9 @@ export interface Invoice {
   caseNumber: string;
   encounterDate: string;
   caseRate: number;
-  invoiceAmount: number;
+  memberCalculatedResponsibilityCents: number;
+  dueDate?: string;
+  remindersSent?: number;
   status: InvoiceStatus;
   submittedBy?: string;
   submittedDate?: string;
@@ -46,6 +50,9 @@ export interface Invoice {
   coinsurancePct?: number;
   copay?: number;
   billingType?: string;
+  servicePaymentsState?: 'pre_authorized' | 'pre_unbillable' | 'encounter_closed' | 'payment_captured' | 'no_payment_needed' | 'ingested';
+  unbillableReason?: string;
+  encounterSource?: string;
 }
 
 export const mockInvoices: Invoice[] = [
@@ -59,22 +66,25 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-100842',
     encounterDate: '2026-01-15',
-    caseRate: 12500,
-    invoiceAmount: 1250,
+    caseRate: 1250000,
+    memberCalculatedResponsibilityCents: 125000,
+    dueDate: '2026-02-14',
     status: 'invoice_pending_approval',
     submittedBy: 'J. Rodriguez',
     submittedDate: '2026-06-10',
     insuranceId: 'UHC-884421',
     memberDob: '1985-04-12',
-    innDedAmount: 1500,
-    innOopAmount: 3000,
-    deductibleMet: 500,
-    deductibleMax: 1500,
-    oopMet: 500,
-    oopMax: 3000,
+    innDedAmount: 150000,
+    innOopAmount: 300000,
+    deductibleMet: 50000,
+    deductibleMax: 150000,
+    oopMet: 50000,
+    oopMax: 300000,
     coinsurancePct: 20,
-    copay: 250,
+    copay: 25000,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
+    encounterSource: 'CRMSurgery',
   },
   {
     id: '2',
@@ -86,13 +96,15 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-200109',
     encounterDate: '2026-02-03',
-    caseRate: 875,
-    invoiceAmount: 0,
+    caseRate: 87500,
+    memberCalculatedResponsibilityCents: 0,
     status: 'invoice_draft',
     insuranceId: 'BCBS-221093',
     memberDob: '1990-07-22',
-    innDedAmount: 800,
-    innOopAmount: 2500,
+    innDedAmount: 80000,
+    innOopAmount: 250000,
+    servicePaymentsState: 'pre_authorized',
+    encounterSource: 'CirrusMD',
   },
   {
     id: '3',
@@ -104,8 +116,9 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-304211',
     encounterDate: '2026-03-10',
-    caseRate: 21000,
-    invoiceAmount: 2100,
+    caseRate: 2100000,
+    memberCalculatedResponsibilityCents: 210000,
+    dueDate: '2026-02-14',
     status: 'invoice_correction_required',
     submittedBy: 'T. Chen',
     submittedDate: '2026-06-15',
@@ -113,14 +126,16 @@ export const mockInvoices: Invoice[] = [
       'Deductible amount appears incorrect — please verify against the latest EOB from carrier before resubmitting.',
     insuranceId: 'AET-554322',
     memberDob: '1978-11-03',
-    innDedAmount: 3000,
-    innOopAmount: 6000,
-    deductibleMet: 1200,
-    deductibleMax: 3000,
-    oopMet: 2100,
-    oopMax: 6000,
+    innDedAmount: 300000,
+    innOopAmount: 600000,
+    deductibleMet: 120000,
+    deductibleMax: 300000,
+    oopMet: 210000,
+    oopMax: 600000,
     coinsurancePct: 20,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
+    encounterSource: 'ManuallyEnteredCostShare',
   },
   // Paid — UHC not reported (4 records for bulk demo)
   {
@@ -133,15 +148,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-104022',
     encounterDate: '2026-01-28',
-    caseRate: 6500,
-    invoiceAmount: 650,
+    caseRate: 650000,
+    memberCalculatedResponsibilityCents: 65000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'United Healthcare',
     reportingStatus: 'not_reported',
     insuranceId: 'UHC-112049',
     memberDob: '1992-03-17',
-    innDedAmount: 1500,
-    innOopAmount: 3000,
+    innDedAmount: 150000,
+    innOopAmount: 300000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'CRMSurgery',
   },
   {
     id: '11',
@@ -153,15 +171,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-110031',
     encounterDate: '2026-02-14',
-    caseRate: 9200,
-    invoiceAmount: 920,
+    caseRate: 920000,
+    memberCalculatedResponsibilityCents: 92000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'United Healthcare',
     reportingStatus: 'not_reported',
     insuranceId: 'UHC-556012',
     memberDob: '1988-07-04',
-    innDedAmount: 1500,
-    innOopAmount: 3000,
+    innDedAmount: 150000,
+    innOopAmount: 300000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'CRMSurgery',
   },
   {
     id: '12',
@@ -173,15 +194,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-120044',
     encounterDate: '2026-03-05',
-    caseRate: 11000,
-    invoiceAmount: 1100,
+    caseRate: 1100000,
+    memberCalculatedResponsibilityCents: 110000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'United Healthcare',
     reportingStatus: 'not_reported',
     insuranceId: 'UHC-998823',
     memberDob: '1979-11-19',
-    innDedAmount: 1500,
-    innOopAmount: 3000,
+    innDedAmount: 150000,
+    innOopAmount: 300000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'CRMSurgery',
   },
   {
     id: '13',
@@ -193,15 +217,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-130077',
     encounterDate: '2026-04-18',
-    caseRate: 7800,
-    invoiceAmount: 780,
+    caseRate: 780000,
+    memberCalculatedResponsibilityCents: 78000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'United Healthcare',
     reportingStatus: 'not_reported',
     insuranceId: 'UHC-334455',
     memberDob: '1994-05-30',
-    innDedAmount: 1500,
-    innOopAmount: 3000,
+    innDedAmount: 150000,
+    innOopAmount: 300000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'ManuallyEnteredCostShare',
   },
   // Paid — UHC manually reported
   {
@@ -214,15 +241,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-620011',
     encounterDate: '2026-05-12',
-    caseRate: 3200,
-    invoiceAmount: 320,
+    caseRate: 320000,
+    memberCalculatedResponsibilityCents: 32000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'United Healthcare',
     reportingStatus: 'manually_reported',
     insuranceId: 'UHC-770844',
     memberDob: '1995-12-01',
-    innDedAmount: 1000,
-    innOopAmount: 2500,
+    innDedAmount: 100000,
+    innOopAmount: 250000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'ManuallyEnteredCostShare',
   },
   // Paid — Aetna not reported (2 records)
   {
@@ -235,15 +265,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-800421',
     encounterDate: '2026-06-01',
-    caseRate: 18000,
-    invoiceAmount: 1800,
+    caseRate: 1800000,
+    memberCalculatedResponsibilityCents: 180000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'Aetna',
     reportingStatus: 'not_reported',
     insuranceId: 'AET-330091',
     memberDob: '1971-06-14',
-    innDedAmount: 3000,
-    innOopAmount: 7500,
+    innDedAmount: 300000,
+    innOopAmount: 750000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'ManuallyEnteredCostShare',
   },
   {
     id: '14',
@@ -255,15 +288,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-140066',
     encounterDate: '2026-05-22',
-    caseRate: 14500,
-    invoiceAmount: 1450,
+    caseRate: 1450000,
+    memberCalculatedResponsibilityCents: 145000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'Aetna',
     reportingStatus: 'not_reported',
     insuranceId: 'AET-667720',
     memberDob: '1983-02-08',
-    innDedAmount: 2000,
-    innOopAmount: 5000,
+    innDedAmount: 200000,
+    innOopAmount: 500000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'CRMSurgery',
   },
   // Paid — BCBS automated file report (system-set, locked)
   {
@@ -276,15 +312,18 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-150088',
     encounterDate: '2026-04-30',
-    caseRate: 2800,
-    invoiceAmount: 280,
+    caseRate: 280000,
+    memberCalculatedResponsibilityCents: 28000,
+    dueDate: '2026-02-14',
     status: 'paid',
     carrier: 'BCBS',
     reportingStatus: 'automated_file_report',
     insuranceId: 'BCBS-441199',
     memberDob: '1990-09-15',
-    innDedAmount: 1200,
-    innOopAmount: 3500,
+    innDedAmount: 120000,
+    innOopAmount: 350000,
+    servicePaymentsState: 'payment_captured',
+    encounterSource: 'CirrusMD',
   },
   // Active
   {
@@ -297,14 +336,17 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-511022',
     encounterDate: '2026-04-05',
-    caseRate: 8800,
-    invoiceAmount: 880,
+    caseRate: 880000,
+    memberCalculatedResponsibilityCents: 88000,
+    dueDate: '2026-02-14',
     status: 'issued_invoice',
     carrier: 'Aetna',
     insuranceId: 'AET-990211',
     memberDob: '1980-08-30',
-    innDedAmount: 2000,
-    innOopAmount: 5000,
+    innDedAmount: 200000,
+    innOopAmount: 500000,
+    servicePaymentsState: 'encounter_closed',
+    encounterSource: 'ManuallyEnteredCostShare',
   },
   // Drafts
   {
@@ -317,9 +359,11 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'recoupment',
     caseNumber: 'TC-711033',
     encounterDate: '2026-05-20',
-    caseRate: 500,
-    invoiceAmount: 500,
+    caseRate: 50000,
+    memberCalculatedResponsibilityCents: 50000,
     status: 'invoice_draft',
+    servicePaymentsState: 'pre_authorized',
+    encounterSource: 'CirrusMD',
   },
   // Surgery – Not issued
   {
@@ -332,19 +376,21 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-900114',
     encounterDate: '2026-06-02',
-    caseRate: 15000,
-    invoiceAmount: 0,
+    caseRate: 1500000,
+    memberCalculatedResponsibilityCents: 0,
     status: 'pre_calculated',
     insuranceId: 'UHC-443021',
     memberDob: '1988-09-25',
-    innDedAmount: 1500,
-    innOopAmount: 3000,
-    deductibleMet: 1200,
-    deductibleMax: 1500,
-    oopMet: 1200,
-    oopMax: 3000,
+    innDedAmount: 150000,
+    innOopAmount: 300000,
+    deductibleMet: 120000,
+    deductibleMax: 150000,
+    oopMet: 120000,
+    oopMax: 300000,
     coinsurancePct: 20,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
+    encounterSource: 'CRMSurgery',
   },
   {
     id: '10',
@@ -356,19 +402,21 @@ export const mockInvoices: Invoice[] = [
     invoiceType: 'cost_share',
     caseNumber: 'TC-910088',
     encounterDate: '2026-06-10',
-    caseRate: 22000,
-    invoiceAmount: 0,
+    caseRate: 2200000,
+    memberCalculatedResponsibilityCents: 0,
     status: 'pre_calculated',
     insuranceId: 'AET-881122',
     memberDob: '1975-02-14',
-    innDedAmount: 2000,
-    innOopAmount: 5000,
-    deductibleMet: 500,
-    deductibleMax: 2000,
-    oopMet: 500,
-    oopMax: 5000,
+    innDedAmount: 200000,
+    innOopAmount: 500000,
+    deductibleMet: 50000,
+    deductibleMax: 200000,
+    oopMet: 50000,
+    oopMax: 500000,
     coinsurancePct: 20,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
+    encounterSource: 'CRMSurgery',
   },
 ];
 
@@ -568,7 +616,7 @@ function ExportModal({ invoices, initialSelected, onClose, onConfirm }: ExportMo
                       </td>
                       <td className={styles.exportTd}>{inv.caseNumber}</td>
                       <td className={styles.exportTd}>{inv.carrier}</td>
-                      <td className={styles.exportTd}><strong>{formatCurrency(inv.invoiceAmount)}</strong></td>
+                      <td className={styles.exportTd}><strong>{formatOptionalCents(inv.memberCalculatedResponsibilityCents)}</strong></td>
                       <td className={styles.exportTd}>
                         <span className={styles.reportingBadgeUnreported}>Not reported</span>
                       </td>
@@ -663,7 +711,7 @@ function ExportModal({ invoices, initialSelected, onClose, onConfirm }: ExportMo
                 {selectedInvoices.map((inv) => (
                   <li key={inv.id} className={styles.confirmListItem}>
                     <span>{inv.memberName}</span>
-                    <span className={styles.confirmListMeta}>{inv.caseNumber} · {inv.carrier} · {formatCurrency(inv.invoiceAmount)}</span>
+                    <span className={styles.confirmListMeta}>{inv.caseNumber} · {inv.carrier} · {formatOptionalCents(inv.memberCalculatedResponsibilityCents)}</span>
                   </li>
                 ))}
               </ul>
@@ -845,7 +893,7 @@ function ApprovalDrawer({ invoice, isBillingManager, onClose, onApprove, onCorre
   const memberDue = Math.min(rawTotal, oopRemaining);
 
   function fmtC(n: number) {
-    return `$${n.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    return formatCents(n);
   }
   function fmtD(d: string) {
     if (!d) return '—';
@@ -905,7 +953,7 @@ function ApprovalDrawer({ invoice, isBillingManager, onClose, onApprove, onCorre
             </div>
             <div className={styles.drawerInfoRow}>
               <span className={styles.drawerInfoLabel}>Billing type</span>
-              <span className={styles.drawerInfoValue}>{invoice.billingType ?? '—'}</span>
+              <span className={styles.drawerInfoValue}>{invoice.billingType ? (COST_SHARE_TYPE_LABELS[invoice.billingType] ?? invoice.billingType) : '—'}</span>
             </div>
             <div className={styles.drawerInfoRow}>
               <span className={styles.drawerInfoLabel}>Invoice type</span>
@@ -985,7 +1033,7 @@ function ApprovalDrawer({ invoice, isBillingManager, onClose, onApprove, onCorre
           {/* Invoice amount */}
           <div className={styles.drawerAmountCard}>
             <div className={styles.drawerAmountLabel}>Invoice amount</div>
-            <div className={styles.drawerAmountValue}>{fmtC(invoice.invoiceAmount || memberDue)}</div>
+            <div className={styles.drawerAmountValue}>{fmtC(invoice.memberCalculatedResponsibilityCents || memberDue)}</div>
             <div className={styles.drawerAmountMeta}>Case rate {fmtC(rate)} · {coinsurancePct}% coinsurance{copay > 0 ? ` · ${fmtC(copay)} copay` : ''}</div>
           </div>
 
@@ -1004,7 +1052,7 @@ function ApprovalDrawer({ invoice, isBillingManager, onClose, onApprove, onCorre
           {isBillingManager && confirmingApprove && (
             <div className={styles.drawerConfirm}>
               <p className={styles.drawerConfirmText}>
-                Approve and send <strong>{fmtC(invoice.invoiceAmount || memberDue)}</strong> invoice to <strong>{invoice.memberName}</strong>?
+                Approve and send <strong>{fmtC(invoice.memberCalculatedResponsibilityCents || memberDue)}</strong> invoice to <strong>{invoice.memberName}</strong>?
               </p>
               <div className={styles.drawerConfirmButtons}>
                 <Button appearance="primary" onClick={() => onApprove(invoice)}>Yes, approve &amp; send</Button>
@@ -1073,6 +1121,8 @@ export default function Billing() {
   const tabStatuses = getTabStatuses(activeTab);
   const isPaid = activeTab === 'Paid';
   const isPendingApproval = activeTab === 'Pending Approval';
+  const isActive = activeTab === 'Active';
+  const isNotIssued = activeTab === 'Surgery – Not issued';
   const isBillingManager = role === 'billing_manager';
 
   const filtered = invoices.filter((inv) => {
@@ -1338,6 +1388,10 @@ export default function Billing() {
         </div>
       )}
 
+      {/* Production note: this tab uses a separate getInvoiceableSurgeryCases query
+          which returns surgeries eligible for invoicing but not yet invoiced.
+          Mock data here simulates that response shape for prototype purposes. */}
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -1360,6 +1414,8 @@ export default function Billing() {
               <th className={styles.th}>Encounter date</th>
               <th className={styles.th}>Case rate</th>
               <th className={styles.th}>Invoice amount</th>
+              {isActive && <th className={styles.th}>Due Date</th>}
+              {isActive && <th className={styles.th}>Reminders Sent</th>}
               {isPaid && <th className={styles.th}>Carrier</th>}
               {isPaid && <th className={styles.th}>Reporting status</th>}
               <th className={styles.th}>Status</th>
@@ -1369,7 +1425,7 @@ export default function Billing() {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={isPaid ? 14 : 12} className={styles.emptyState}>
+                <td colSpan={isPaid ? 14 : isActive ? 14 : 12} className={styles.emptyState}>
                   No invoices found for this view.
                 </td>
               </tr>
@@ -1418,11 +1474,21 @@ export default function Billing() {
                   <td className={styles.td}>
                     <div>{inv.encounterType}</div>
                     <div className={styles.memberClient}>{inv.invoiceType === 'cost_share' ? 'Cost share' : 'Recoupment'}</div>
+                    {inv.encounterSource && (
+                      <div className={styles.memberClient}>{ENCOUNTER_SOURCE_LABELS[inv.encounterSource] ?? inv.encounterSource}</div>
+                    )}
                   </td>
                   <td className={styles.td}>{inv.caseNumber}</td>
                   <td className={styles.td}>{formatDate(inv.encounterDate)}</td>
-                  <td className={styles.td}>{formatCurrency(inv.caseRate)}</td>
-                  <td className={styles.td}><strong>{formatCurrency(inv.invoiceAmount)}</strong></td>
+                  <td className={styles.td}>{formatCents(inv.caseRate)}</td>
+                  <td className={styles.td}><strong>{formatOptionalCents(inv.memberCalculatedResponsibilityCents)}</strong></td>
+                  {isActive && <td className={styles.td}>{inv.dueDate ?? '—'}</td>}
+                  {isActive && (
+                    <td className={styles.td}>
+                      {/* production: pulled from Salesforce activity log — not yet available in this prototype */}
+                      —
+                    </td>
+                  )}
                   {isPaid && <td className={styles.td}>{inv.carrier ?? '—'}</td>}
                   {isPaid && (
                     <td className={styles.td}>
