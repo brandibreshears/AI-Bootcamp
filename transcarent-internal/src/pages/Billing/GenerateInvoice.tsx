@@ -4,6 +4,7 @@ import styles from './GenerateInvoice.module.css';
 import { Button } from '../../components/ui/Button/Button';
 import { InfoIcon, CheckIcon } from '../../components/ui/Icons';
 import { COST_SHARE_TYPE_LABELS } from '../../utils/invoiceStatus';
+import { formatCents } from '../../utils/currency';
 
 const STEPS = [
   'Select member',
@@ -26,30 +27,30 @@ const ENCOUNTER_OPTIONS = [
 
 // Maps the short display names stored on Invoice.encounterType → option values
 const ENCOUNTER_TYPE_MAP: Record<string, string> = {
+  'Cancer COE': 'cancer_care_centers_of_excellence',
+  'Surgery': 'surgery',
+  'Telehealth': 'telehealth',
   'Care at Home': 'care_at_home',
   'Care At Home': 'care_at_home',
-  'Orthopedic': 'ortho',
-  'Orthopedic consultations': 'ortho',
-  'Cancer COE': 'cancer_coe',
-  'Cancer Care COE': 'cancer_coe',
-  'Cancer Chemotherapy': 'cancer_chemo',
+  'Orthopedic consultations': 'orthopedic_consultations',
+  'Orthopedic': 'orthopedic_consultations',
+  'Cancer Chemotherapy': 'cancer_chemotherapy',
   'Cancer Radiation': 'cancer_radiation',
-  'Telehealth': 'telehealth',
-  'Surgery': 'surgery',
+  'Virtual Physical Therapy': 'virtual_physical_therapy',
   'Other': 'other',
 };
 
 // Maps billingType display strings stored on Invoice → costShareType option values
 const BILLING_TYPE_MAP: Record<string, string> = {
   'Waived': 'waived',
-  'IRS Minimum': 'irs_minimum',
-  'Insurance': 'insurance',
+  'IRS Minimum': 'irs_minimums',
+  'Insurance': 'same_as_insurance',
   'Custom': 'custom',
   'Traditional': 'traditional',
   'Fixed Cost': 'fixed_cost',
   'fixed_cost': 'fixed_cost',
-  'irs_minimum': 'irs_minimum',
-  'insurance': 'insurance',
+  'irs_minimums': 'irs_minimums',
+  'same_as_insurance': 'same_as_insurance',
   'custom': 'custom',
   'traditional': 'traditional',
   'waived': 'waived',
@@ -144,8 +145,8 @@ export default function GenerateInvoice() {
   const [repaymentAmount, setRepaymentAmount] = useState('');
 
   // Step 3 — Cost share type & accumulator (cost_share only)
-  const [costShareType, setCostShareType] = useState<'waived' | 'irs_minimum' | 'insurance' | 'custom' | 'traditional' | 'fixed_cost' | ''>(
-    (existingInvoice?.billingType ? (BILLING_TYPE_MAP[existingInvoice.billingType] ?? '') : '') as 'waived' | 'irs_minimum' | 'insurance' | 'custom' | 'traditional' | 'fixed_cost' | ''
+  const [costShareType, setCostShareType] = useState<'waived' | 'irs_minimums' | 'same_as_insurance' | 'custom' | 'traditional' | 'fixed_cost' | ''>(
+    (existingInvoice?.billingType ? (BILLING_TYPE_MAP[existingInvoice.billingType] ?? '') : '') as 'waived' | 'irs_minimums' | 'same_as_insurance' | 'custom' | 'traditional' | 'fixed_cost' | ''
   );
   // IRS / Insurance / Custom shared fields
   const [csIndDed, setCsIndDed] = useState(existingInvoice?.deductibleMax != null ? String(existingInvoice.deductibleMax) : '');
@@ -184,16 +185,16 @@ export default function GenerateInvoice() {
   const [spentFamOop, setSpentFamOop] = useState('');
   const [maxFamOop, setMaxFamOop] = useState('');
 
-  // Orbit mock accumulators — prefer values from existing invoice when editing
-  const deductibleMet = existingInvoice?.deductibleMet ?? 1500;
-  const deductibleMax = existingInvoice?.deductibleMax ?? 3000;
-  const oopMet = existingInvoice?.oopMet ?? 2800;
-  const oopMax = existingInvoice?.oopMax ?? 6000;
+  // Orbit mock accumulators — prefer values from existing invoice when editing (all in cents)
+  const deductibleMet = existingInvoice?.deductibleMet ?? 150000;
+  const deductibleMax = existingInvoice?.deductibleMax ?? 300000;
+  const oopMet = existingInvoice?.oopMet ?? 280000;
+  const oopMax = existingInvoice?.oopMax ?? 600000;
 
   // Coinsurance % derives from Step 3 billing type configuration
   const effectiveCoinsurancePct =
-    costShareType === 'irs_minimum' ? (parseFloat(csCoinsurance) || 0)
-    : costShareType === 'insurance' ? 0   // read-only from insurance plan (shown as 0%)
+    costShareType === 'irs_minimums' ? (parseFloat(csCoinsurance) || 0)
+    : costShareType === 'same_as_insurance' ? 0   // read-only from insurance plan (shown as 0%)
     : costShareType === 'custom' ? (parseFloat(csCoinsurance) || 0)
     : costShareType === 'traditional' ? (parseFloat(csCostAfter) || 0)
     : 0;
@@ -217,11 +218,12 @@ export default function GenerateInvoice() {
   })();
   const calculatedCostShare = calculatedTotal.toFixed(2);
 
-  const finalAmount = costShareType === 'waived' ? '0'
-    : costShareType === 'fixed_cost' ? (csFixedAmount || '0')
-    : manualOverride ? manualAmount
-    : invoiceType === 'recoupment' ? repaymentAmount
-    : calculatedCostShare;
+  const finalAmountCents = costShareType === 'waived' ? 0
+    : costShareType === 'fixed_cost' ? Math.round(parseFloat(csFixedAmount || '0') * 100)
+    : manualOverride ? Math.round(parseFloat(manualAmount || '0') * 100)
+    : invoiceType === 'recoupment' ? Math.round(parseFloat(repaymentAmount || '0') * 100)
+    : Math.round(calculatedTotal * 100);
+  const finalAmount = String(parseFloat(calculatedCostShare));
 
   const isSurgery = encounter === 'surgery';
 
@@ -230,8 +232,8 @@ export default function GenerateInvoice() {
 
   const surgeryModelTypes = [
     { value: 'waived', label: 'Waived', desc: 'Client has waived cost-share — no member fee regardless of accumulator status.' },
-    { value: 'irs_minimum', label: 'IRS Minimum', desc: 'Minimum cost required for HDHPs per IRS rules. Deductible values are pulled from IRS tables.' },
-    { value: 'insurance', label: 'Insurance', desc: 'Charges based on the member\'s regular insurance plan rules. Values are read-only from the insurance plan.' },
+    { value: 'irs_minimums', label: 'IRS Minimum', desc: 'Minimum cost required for HDHPs per IRS rules. Deductible values are pulled from IRS tables.' },
+    { value: 'same_as_insurance', label: 'Insurance', desc: 'Charges based on the member\'s regular insurance plan rules. Values are read-only from the insurance plan.' },
     { value: 'custom', label: 'Custom', desc: 'Custom deductibles and coinsurance set by the client, independent of the regular insurance plan.' },
   ];
 
@@ -667,7 +669,7 @@ export default function GenerateInvoice() {
               )}
 
               {/* IRS Minimum */}
-              {costShareType === 'irs_minimum' && (
+              {costShareType === 'irs_minimums' && (
                 <>
                   <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
@@ -697,7 +699,7 @@ export default function GenerateInvoice() {
               )}
 
               {/* Insurance */}
-              {costShareType === 'insurance' && (
+              {costShareType === 'same_as_insurance' && (
                 <>
                   <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
@@ -1005,14 +1007,14 @@ export default function GenerateInvoice() {
                 <div className={styles.accumGrid}>
                   <div className={styles.accumCard}>
                     <div className={styles.accumLabel}>Deductible met</div>
-                    <div className={styles.accumValue}>${deductibleMet.toLocaleString()} <span className={styles.accumOf}>/ ${deductibleMax.toLocaleString()}</span></div>
+                    <div className={styles.accumValue}>{formatCents(deductibleMet)} <span className={styles.accumOf}>/ {formatCents(deductibleMax)}</span></div>
                     <div className={styles.accumBar}>
                       <div className={styles.accumFill} style={{ width: `${(deductibleMet / deductibleMax) * 100}%` }} />
                     </div>
                   </div>
                   <div className={styles.accumCard}>
                     <div className={styles.accumLabel}>Out-of-pocket met</div>
-                    <div className={styles.accumValue}>${oopMet.toLocaleString()} <span className={styles.accumOf}>/ ${oopMax.toLocaleString()}</span></div>
+                    <div className={styles.accumValue}>{formatCents(oopMet)} <span className={styles.accumOf}>/ {formatCents(oopMax)}</span></div>
                     <div className={styles.accumBar}>
                       <div className={styles.accumFill} style={{ width: `${(oopMet / oopMax) * 100}%` }} />
                     </div>
@@ -1031,96 +1033,96 @@ export default function GenerateInvoice() {
                   <div className={styles.calcBreakdownTitle}>How this was calculated</div>
 
                   {/* IRS Minimum */}
-                  {costShareType === 'irs_minimum' && (() => {
+                  {costShareType === 'irs_minimums' && (() => {
                     const postDedAmount = rate > 0 ? Math.max(rate - dedRemaining, 0) * effectiveCoinsurance : 0;
                     const total = Math.min(dedRemaining + postDedAmount + copay, oopRemaining);
                     return (
                       <div className={styles.calcSteps}>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>IRS deductible (individual)</span>
-                          <span className={styles.calcStepValue}>${deductibleMax.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(deductibleMax)}</span>
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Already met this year (from Orbit)</span>
-                          <span className={styles.calcStepValue}>− ${deductibleMet.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>− {formatCents(deductibleMet)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepSub}`}>
                           <span className={styles.calcStepLabel}>Remaining deductible member owes</span>
-                          <span className={styles.calcStepValue}>${dedRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(dedRemaining)}</span>
                         </div>
                         {rate > 0 && dedRemaining < rate && (
                           <>
                             <div className={styles.calcStep} style={{ marginTop: 8 }}>
                               <span className={styles.calcStepLabel}>Case rate subject to coinsurance</span>
-                              <span className={styles.calcStepValue}>${(rate - dedRemaining).toLocaleString()}</span>
+                              <span className={styles.calcStepValue}>{formatCents(rate - dedRemaining)}</span>
                             </div>
                             <div className={styles.calcStep}>
                               <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% coinsurance (entered in step 3)</span>
-                              <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
+                              <span className={styles.calcStepValue}>{formatCents(postDedAmount)}</span>
                             </div>
                           </>
                         )}
                         {copay > 0 && (
                           <div className={styles.calcStep}>
                             <span className={styles.calcStepLabel}>+ Specialist copay (entered in step 3)</span>
-                            <span className={styles.calcStepValue}>${copay.toFixed(2)}</span>
+                            <span className={styles.calcStepValue}>{formatCents(copay)}</span>
                           </div>
                         )}
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>OOP max remaining (cap)</span>
-                          <span className={styles.calcStepValue}>${oopRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(oopRemaining)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepTotal}`}>
                           <span className={styles.calcStepLabel}>Member cost share due</span>
-                          <span className={styles.calcStepValue}>${total.toFixed(2)}</span>
+                          <span className={styles.calcStepValue}>{formatCents(total)}</span>
                         </div>
                       </div>
                     );
                   })()}
 
                   {/* Insurance */}
-                  {costShareType === 'insurance' && (() => {
+                  {costShareType === 'same_as_insurance' && (() => {
                     const postDedAmount = rate > 0 ? Math.max(rate - dedRemaining, 0) * effectiveCoinsurance : 0;
                     const total = Math.min(dedRemaining + postDedAmount + copay, oopRemaining);
                     return (
                       <div className={styles.calcSteps}>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Insurance deductible (individual)</span>
-                          <span className={styles.calcStepValue}>${deductibleMax.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(deductibleMax)}</span>
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Already met this year (from Orbit)</span>
-                          <span className={styles.calcStepValue}>− ${deductibleMet.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>− {formatCents(deductibleMet)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepSub}`}>
                           <span className={styles.calcStepLabel}>Remaining deductible member owes</span>
-                          <span className={styles.calcStepValue}>${dedRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(dedRemaining)}</span>
                         </div>
                         {rate > 0 && dedRemaining < rate && (
                           <>
                             <div className={styles.calcStep} style={{ marginTop: 8 }}>
                               <span className={styles.calcStepLabel}>Case rate subject to coinsurance</span>
-                              <span className={styles.calcStepValue}>${(rate - dedRemaining).toLocaleString()}</span>
+                              <span className={styles.calcStepValue}>{formatCents(rate - dedRemaining)}</span>
                             </div>
                             <div className={styles.calcStep}>
                               <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% coinsurance (from insurance plan)</span>
-                              <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
+                              <span className={styles.calcStepValue}>{formatCents(postDedAmount)}</span>
                             </div>
                           </>
                         )}
                         {copay > 0 && (
                           <div className={styles.calcStep}>
                             <span className={styles.calcStepLabel}>+ Specialist copay (entered in step 3)</span>
-                            <span className={styles.calcStepValue}>${copay.toFixed(2)}</span>
+                            <span className={styles.calcStepValue}>{formatCents(copay)}</span>
                           </div>
                         )}
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>OOP max remaining (cap)</span>
-                          <span className={styles.calcStepValue}>${oopRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(oopRemaining)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepTotal}`}>
                           <span className={styles.calcStepLabel}>Member cost share due</span>
-                          <span className={styles.calcStepValue}>${total.toFixed(2)}</span>
+                          <span className={styles.calcStepValue}>{formatCents(total)}</span>
                         </div>
                       </div>
                     );
@@ -1137,41 +1139,41 @@ export default function GenerateInvoice() {
                       <div className={styles.calcSteps}>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Custom deductible (individual, from step 3)</span>
-                          <span className={styles.calcStepValue}>${customDed.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(customDed)}</span>
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Already met this year (from Orbit)</span>
-                          <span className={styles.calcStepValue}>− ${dedMet.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>− {formatCents(dedMet)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepSub}`}>
                           <span className={styles.calcStepLabel}>Remaining deductible member owes</span>
-                          <span className={styles.calcStepValue}>${customDedRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(customDedRemaining)}</span>
                         </div>
                         {rate > 0 && customDedRemaining < rate && (
                           <>
                             <div className={styles.calcStep} style={{ marginTop: 8 }}>
                               <span className={styles.calcStepLabel}>Case rate subject to coinsurance</span>
-                              <span className={styles.calcStepValue}>${(rate - customDedRemaining).toLocaleString()}</span>
+                              <span className={styles.calcStepValue}>{formatCents(rate - customDedRemaining)}</span>
                             </div>
                             <div className={styles.calcStep}>
                               <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% coinsurance (entered in step 3)</span>
-                              <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
+                              <span className={styles.calcStepValue}>{formatCents(postDedAmount)}</span>
                             </div>
                           </>
                         )}
                         {copay > 0 && (
                           <div className={styles.calcStep}>
                             <span className={styles.calcStepLabel}>+ Specialist copay (entered in step 3)</span>
-                            <span className={styles.calcStepValue}>${copay.toFixed(2)}</span>
+                            <span className={styles.calcStepValue}>{formatCents(copay)}</span>
                           </div>
                         )}
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>OOP max remaining (cap)</span>
-                          <span className={styles.calcStepValue}>${oopRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(oopRemaining)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepTotal}`}>
                           <span className={styles.calcStepLabel}>Member cost share due</span>
-                          <span className={styles.calcStepValue}>${total.toFixed(2)}</span>
+                          <span className={styles.calcStepValue}>{formatCents(total)}</span>
                         </div>
                       </div>
                     );
@@ -1194,37 +1196,37 @@ export default function GenerateInvoice() {
                         )}
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Cost before deductible (entered in step 3)</span>
-                          <span className={styles.calcStepValue}>${costBefore.toFixed(2)}</span>
+                          <span className={styles.calcStepValue}>{formatCents(costBefore)}</span>
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Deductible remaining (from Orbit)</span>
-                          <span className={styles.calcStepValue}>${dedRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(dedRemaining)}</span>
                         </div>
                         {rate > dedRemaining && (
                           <>
                             <div className={styles.calcStep} style={{ marginTop: 8 }}>
                               <span className={styles.calcStepLabel}>Case rate subject to coinsurance</span>
-                              <span className={styles.calcStepValue}>${(rate - dedRemaining).toLocaleString()}</span>
+                              <span className={styles.calcStepValue}>{formatCents(rate - dedRemaining)}</span>
                             </div>
                             <div className={styles.calcStep}>
                               <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% after deductible (entered in step 3)</span>
-                              <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
+                              <span className={styles.calcStepValue}>{formatCents(postDedAmount)}</span>
                             </div>
                           </>
                         )}
                         {copay > 0 && (
                           <div className={styles.calcStep}>
                             <span className={styles.calcStepLabel}>+ Specialist copay (entered in step 3)</span>
-                            <span className={styles.calcStepValue}>${copay.toFixed(2)}</span>
+                            <span className={styles.calcStepValue}>{formatCents(copay)}</span>
                           </div>
                         )}
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>OOP max remaining (cap)</span>
-                          <span className={styles.calcStepValue}>${oopRemaining.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>{formatCents(oopRemaining)}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepTotal}`}>
                           <span className={styles.calcStepLabel}>Member cost share due</span>
-                          <span className={styles.calcStepValue}>${total.toFixed(2)}</span>
+                          <span className={styles.calcStepValue}>{formatCents(total)}</span>
                         </div>
                       </div>
                     );
@@ -1357,8 +1359,8 @@ export default function GenerateInvoice() {
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Date of service</span><span className={styles.reviewVal}>{serviceDate}</span></div>
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Reference #</span><span className={styles.reviewVal}>{refNumber}</span></div>
                   <div className={styles.reviewDivider} />
-                  {invoiceType === 'recoupment' &&<div className={styles.reviewItem}><span className={styles.reviewKey}>Repayment amount</span><span className={styles.reviewVal}>${parseFloat(repaymentAmount||'0').toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>}
-                  {caseRate && <div className={styles.reviewItem}><span className={styles.reviewKey}>Case rate</span><span className={styles.reviewVal}>${parseFloat(caseRate).toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>}
+                  {invoiceType === 'recoupment' &&<div className={styles.reviewItem}><span className={styles.reviewKey}>Repayment amount</span><span className={styles.reviewVal}>{formatCents(Math.round(parseFloat(repaymentAmount||'0') * 100))}</span></div>}
+                  {caseRate && <div className={styles.reviewItem}><span className={styles.reviewKey}>Case rate</span><span className={styles.reviewVal}>{formatCents(Math.round(parseFloat(caseRate) * 100))}</span></div>}
                   {caseNumber && <div className={styles.reviewItem}><span className={styles.reviewKey}>Case number</span><span className={styles.reviewVal}>{caseNumber}</span></div>}
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Due date</span><span className={styles.reviewVal}>{dueDate}</span></div>
                   <div className={styles.reviewDivider} />
@@ -1375,14 +1377,14 @@ export default function GenerateInvoice() {
                       <div className={styles.reviewItem}><span className={styles.reviewKey}>Cost share type</span><span className={`${styles.reviewVal} ${styles.reviewBadge}`}>{COST_SHARE_TYPE_LABELS[costShareType] ?? availableTypes.find(t => t.value === costShareType)?.label ?? costShareType}</span></div>
                       {costShareType !== 'waived' && costShareType !== 'fixed_cost' && (
                         <>
-                          <div className={styles.reviewItem}><span className={styles.reviewKey}>Deductible met</span><span className={styles.reviewVal}>${deductibleMet.toLocaleString()} / ${deductibleMax.toLocaleString()}</span></div>
-                          <div className={styles.reviewItem}><span className={styles.reviewKey}>OOP met</span><span className={styles.reviewVal}>${oopMet.toLocaleString()} / ${oopMax.toLocaleString()}</span></div>
+                          <div className={styles.reviewItem}><span className={styles.reviewKey}>Deductible met</span><span className={styles.reviewVal}>{formatCents(deductibleMet)} / {formatCents(deductibleMax)}</span></div>
+                          <div className={styles.reviewItem}><span className={styles.reviewKey}>OOP met</span><span className={styles.reviewVal}>{formatCents(oopMet)} / {formatCents(oopMax)}</span></div>
                           <div className={styles.reviewItem}><span className={styles.reviewKey}>Coinsurance rate</span><span className={styles.reviewVal}>{effectiveCoinsurancePct}%</span></div>
-                          <div className={styles.reviewItem}><span className={styles.reviewKey}>Specialist copay</span><span className={styles.reviewVal}>${copay}</span></div>
+                          <div className={styles.reviewItem}><span className={styles.reviewKey}>Specialist copay</span><span className={styles.reviewVal}>{formatCents(copay)}</span></div>
                         </>
                       )}
                       {costShareType === 'fixed_cost' && (
-                        <div className={styles.reviewItem}><span className={styles.reviewKey}>Fixed amount</span><span className={styles.reviewVal}>${parseFloat(csFixedAmount||'0').toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>
+                        <div className={styles.reviewItem}><span className={styles.reviewKey}>Fixed amount</span><span className={styles.reviewVal}>{formatCents(Math.round(parseFloat(csFixedAmount||'0') * 100))}</span></div>
                       )}
                       {manualOverride && bypassReason && (
                         <div className={styles.reviewItem}><span className={styles.reviewKey}>Bypass reason</span><span className={styles.reviewVal}>{bypassReason}</span></div>
@@ -1397,7 +1399,7 @@ export default function GenerateInvoice() {
                 <div className={styles.invoiceAmountBox}>
                   <div className={styles.invoiceAmountLabel}>Invoice amount</div>
                   <div className={styles.invoiceAmountValue}>
-                    ${parseFloat(finalAmount||'0').toLocaleString('en-US',{minimumFractionDigits:2})}
+                    {formatCents(finalAmountCents)}
                   </div>
                   {invoiceType === 'cost_share' && !manualOverride && costShareType !== 'waived' && (
                     <button className={styles.recalcLink} onClick={() => setStep(3)} type="button">
