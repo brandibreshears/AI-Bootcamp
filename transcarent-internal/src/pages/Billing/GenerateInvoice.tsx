@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './GenerateInvoice.module.css';
 import { Button } from '../../components/ui/Button/Button';
@@ -12,33 +12,7 @@ const STEPS = [
   'Review & submit',
 ];
 
-const ENCOUNTER_OPTIONS = [
-  { value: 'care_at_home', label: 'Care at Home' },
-  { value: 'ortho', label: 'Orthopedic consultations' },
-  { value: 'cancer_coe', label: 'Cancer Care Centers of Excellence (COE)' },
-  { value: 'cancer_chemo', label: 'Cancer Chemotherapy' },
-  { value: 'cancer_radiation', label: 'Cancer Radiation' },
-  { value: 'telehealth', label: 'Telehealth' },
-  { value: 'surgery', label: 'Surgery' },
-  { value: 'other', label: 'Other' },
-];
-
-// Maps the short display names stored on Invoice.encounterType → option values
-const ENCOUNTER_TYPE_MAP: Record<string, string> = {
-  'Care at Home': 'care_at_home',
-  'Care At Home': 'care_at_home',
-  'Orthopedic': 'ortho',
-  'Orthopedic consultations': 'ortho',
-  'Cancer COE': 'cancer_coe',
-  'Cancer Care COE': 'cancer_coe',
-  'Cancer Chemotherapy': 'cancer_chemo',
-  'Cancer Radiation': 'cancer_radiation',
-  'Telehealth': 'telehealth',
-  'Surgery': 'surgery',
-  'Other': 'other',
-};
-
-// Maps billingType display strings stored on Invoice → costShareType option values
+// Maps billingType display strings stored on Invoice â†’ costShareType option values
 const BILLING_TYPE_MAP: Record<string, string> = {
   'Waived': 'waived',
   'IRS Minimum': 'irs_minimum',
@@ -64,10 +38,16 @@ function generateRefNumber() {
   return `INV-2026-${Math.floor(10000 + Math.random() * 90000)}`;
 }
 
-function defaultDueDate() {
-  const d = new Date();
-  d.setDate(d.getDate() + 30);
-  return d.toISOString().split('T')[0];
+function addBusinessDays(startDate: string, days: number): string {
+  if (!startDate) return '';
+  const date = new Date(startDate);
+  let added = 0;
+  while (added < days) {
+    date.setDate(date.getDate() + 1);
+    const dow = date.getDay();
+    if (dow !== 0 && dow !== 6) added++;
+  }
+  return date.toISOString().split('T')[0];
 }
 
 export default function GenerateInvoice() {
@@ -79,10 +59,10 @@ export default function GenerateInvoice() {
       memberName?: string;
       client?: string;
       encounterType?: string;
-      encounterDate?: string;
+      operationDate?: string;
       invoiceType?: 'cost_share' | 'recoupment';
-      caseRate?: number;
-      caseNumber?: string;
+      operationCostInCents?: number;
+      salesforceCaseNumber?: string;
       deductibleMet?: number;
       deductibleMax?: number;
       oopMet?: number;
@@ -92,6 +72,12 @@ export default function GenerateInvoice() {
       billingType?: string;
       innDedAmount?: number;
       innOopAmount?: number;
+      caseId?: string;
+      salesforceInvoiceId?: string;
+      invoiceTitle?: string;
+      invoiceDescription?: string;
+      serviceDescription?: string;
+      facilityName?: string;
     }
   } | null)?.invoice;
   const correctionNote = existingInvoice?.correctionNote;
@@ -101,7 +87,7 @@ export default function GenerateInvoice() {
   const [step, setStep] = useState(isCorrection ? 1 : 0);
   const [selectedMember, setSelectedMember] = useState<typeof mockMemberResults[0] | null>(null);
 
-  // Step 0 — Member search
+  // Step 0 â€” Member search
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [searchFirstName, setSearchFirstName] = useState('');
   const [searchLastName, setSearchLastName] = useState('');
@@ -113,36 +99,42 @@ export default function GenerateInvoice() {
   const [searchCaseId, setSearchCaseId] = useState('');
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
-  // Step 1 — Care experience selection
+  // Step 1 â€” Care experience selection
   const [invoiceType, setInvoiceType] = useState<'cost_share' | 'recoupment' | ''>(existingInvoice?.invoiceType ?? '');
-  const [encounter, setEncounter] = useState(
-    existingInvoice?.encounterType
-      ? (ENCOUNTER_TYPE_MAP[existingInvoice.encounterType]
-         ?? ENCOUNTER_OPTIONS.find(o => o.label.toLowerCase() === existingInvoice.encounterType!.toLowerCase())?.value
-         ?? existingInvoice.encounterType.toLowerCase().replace(/ /g, '_'))
-      : ''
-  );
-  const [serviceDate, setServiceDate] = useState(existingInvoice?.encounterDate ?? '');
+  // Encounter type is locked to surgery in current release
+  const encounter = 'surgery';
+  const [operationDate, setOperationDate] = useState(existingInvoice?.operationDate ?? '');
   const [refNumber] = useState(generateRefNumber());
+  const [salesforceCaseId, setSalesforceCaseId] = useState(existingInvoice?.caseId ?? '');
+  const [salesforceInvoiceId, setSalesforceInvoiceId] = useState(existingInvoice?.salesforceInvoiceId ?? '');
+  const [invoiceTitle, setInvoiceTitle] = useState(existingInvoice?.invoiceTitle ?? '');
+  const [invoiceDescription, setInvoiceDescription] = useState(existingInvoice?.invoiceDescription ?? '');
+  const [serviceDescription, setServiceDescription] = useState(existingInvoice?.serviceDescription ?? '');
+  const [facilityName, setFacilityName] = useState(existingInvoice?.facilityName ?? '');
+  const [dueDate, setDueDate] = useState('');
 
-  // Step 2 — Invoice details (fields differ by invoice type)
+  // Auto-calculate due date as 30 business days from operationDate
+  useEffect(() => {
+    if (operationDate) {
+      setDueDate(addBusinessDays(operationDate, 30));
+    }
+  }, [operationDate]);
+
+  // Step 2 â€” Invoice details (fields differ by invoice type)
   // Cost Share fields
   const [csPeriodStart, setCsPeriodStart] = useState('2026-01-01');
   const [csPeriodEnd, setCsPeriodEnd] = useState('2026-12-31');
   const [csPeriodExpanded, setCsPeriodExpanded] = useState(false);
   const [csCopay, setCsCopay] = useState(existingInvoice?.copay != null ? String(existingInvoice.copay) : '');
-  const [maxMemberCost, setMaxMemberCost] = useState('');
-  const [caseRate, setCaseRate] = useState(existingInvoice?.caseRate != null ? String(existingInvoice.caseRate) : '');
-  const [caseNumber, setCaseNumber] = useState(existingInvoice?.caseNumber ?? '');
-  const [dueDate, setDueDate] = useState(defaultDueDate());
+  // maxMemberCost reserved for future OOP cap override
+  const [operationCostInCents, setOperationCostInCents] = useState(existingInvoice?.operationCostInCents != null ? String(existingInvoice.operationCostInCents) : '');
+  const [salesforceCaseNumber, setSalesforceCaseNumber] = useState(existingInvoice?.salesforceCaseNumber ?? '');
   // EOB fields (conditionally shown)
   const [eobOn, setEobOn] = useState(false);
-  const [facilityName, setFacilityName] = useState('');
-  const [serviceDescription, setServiceDescription] = useState('');
   // Recoupment fields
   const [repaymentAmount, setRepaymentAmount] = useState('');
 
-  // Step 3 — Cost share type & accumulator (cost_share only)
+  // Step 3 â€” Cost share type & accumulator (cost_share only)
   const [costShareType, setCostShareType] = useState<'waived' | 'irs_minimum' | 'insurance' | 'custom' | 'traditional' | 'fixed_cost' | ''>(
     (existingInvoice?.billingType ? (BILLING_TYPE_MAP[existingInvoice.billingType] ?? '') : '') as 'waived' | 'irs_minimum' | 'insurance' | 'custom' | 'traditional' | 'fixed_cost' | ''
   );
@@ -161,6 +153,10 @@ export default function GenerateInvoice() {
   // Free visits (Fixed Cost / Traditional)
   const [initialFreeVisits, setInitialFreeVisits] = useState('');
 
+
+  const [submitting, setSubmitting] = useState(false);
+  const [calculated, setCalculated] = useState(false);
+  const [calculatedCost, setCalculatedCost] = useState(0);
   const [bypassExpanded, setBypassExpanded] = useState(false);
   const [manualOverride, setManualOverride] = useState(false);
   const [manualAmount, setManualAmount] = useState('');
@@ -182,25 +178,31 @@ export default function GenerateInvoice() {
   const [spentFamOop, setSpentFamOop] = useState('');
   const [maxFamOop, setMaxFamOop] = useState('');
 
-  // Orbit mock accumulators — prefer values from existing invoice when editing
-  const deductibleMet = existingInvoice?.deductibleMet ?? 1500;
-  const deductibleMax = existingInvoice?.deductibleMax ?? 3000;
-  const oopMet = existingInvoice?.oopMet ?? 2800;
-  const oopMax = existingInvoice?.oopMax ?? 6000;
+  // Accumulator override section (step 3)
+  const [showOverrides, setShowOverrides] = useState(false);
+  const [overrideReason, setOverrideReason] = useState('');
+  const [overrideDetails, setOverrideDetails] = useState('');
+
+  // Orbit mock accumulators — prefer values from existing invoice when editing (all in cents)
+  const deductibleMet = existingInvoice?.deductibleMet ?? 150000;
+  const deductibleMax = existingInvoice?.deductibleMax ?? 300000;
+  const oopMet = existingInvoice?.oopMet ?? 280000;
+  const oopMax = existingInvoice?.oopMax ?? 600000;
 
   // Coinsurance % derives from Step 3 billing type configuration
-  const effectiveCoinsurancePct =
-    costShareType === 'irs_minimum' ? (parseFloat(csCoinsurance) || 0)
-    : costShareType === 'insurance' ? 0   // read-only from insurance plan (shown as 0%)
+  const coinsurancePct =
+    costShareType === 'irs_minimums' ? (parseFloat(csCoinsurance) || 0)
+    : costShareType === 'same_as_insurance' ? 0   // read-only from insurance plan (shown as 0%)
     : costShareType === 'custom' ? (parseFloat(csCoinsurance) || 0)
     : costShareType === 'traditional' ? (parseFloat(csCostAfter) || 0)
     : 0;
+  const effectiveCoinsurancePct = coinsurancePct;
   const effectiveCoinsurance = effectiveCoinsurancePct / 100;
 
-  // Copay comes from Step 3 input — defaults to 0 if not entered
+  // Copay comes from Step 3 input â€” defaults to 0 if not entered
   const copay = parseFloat(csCopay) || 0;
 
-  const rate = parseFloat(caseRate) || 0;
+  const rate = parseFloat(operationCostInCents) || 0;
   const dedRemaining = Math.max(deductibleMax - deductibleMet, 0);
   const oopRemaining = Math.max(oopMax - oopMet, 0);
   // Traditional uses a flat pre-deductible rate instead of dedRemaining as member cost
@@ -227,14 +229,14 @@ export default function GenerateInvoice() {
   const isPreconfigured = ['surgery', 'telehealth', 'care_at_home', 'ortho'].includes(encounter);
 
   const surgeryModelTypes = [
-    { value: 'waived', label: 'Waived', desc: 'Client has waived cost-share — no member fee regardless of accumulator status.' },
+    { value: 'waived', label: 'Waived', desc: 'Client has waived cost-share â€” no member fee regardless of accumulator status.' },
     { value: 'irs_minimum', label: 'IRS Minimum', desc: 'Minimum cost required for HDHPs per IRS rules. Deductible values are pulled from IRS tables.' },
     { value: 'insurance', label: 'Insurance', desc: 'Charges based on the member\'s regular insurance plan rules. Values are read-only from the insurance plan.' },
     { value: 'custom', label: 'Custom', desc: 'Custom deductibles and coinsurance set by the client, independent of the regular insurance plan.' },
   ];
 
   const otherModelTypes = [
-    { value: 'waived', label: 'Waived', desc: 'Client has waived cost-share — no member fee regardless of accumulator status.' },
+    { value: 'waived', label: 'Waived', desc: 'Client has waived cost-share â€” no member fee regardless of accumulator status.' },
     { value: 'fixed_cost', label: 'Fixed Cost', desc: 'Member pays a fixed dollar amount per encounter. Can optionally count toward OOP max.' },
     { value: 'traditional', label: 'Traditional', desc: 'Differing pre and post-deductible costs set by the client, not taken from the insurance plan.' },
   ];
@@ -249,14 +251,14 @@ export default function GenerateInvoice() {
   const totalSteps = effectiveSteps.length;
 
   const step2Valid = invoiceType === 'cost_share'
-    ? !!(costShareType !== '' && dueDate && serviceDate && encounter)
-    : !!(repaymentAmount && dueDate && serviceDate && encounter);
+    ? !!(costShareType !== '' && dueDate && operationDate && encounter)
+    : !!(repaymentAmount && dueDate && operationDate && encounter);
 
   const minStep = isCorrection ? 1 : 0;
 
   const canProceed =
     (step === 0 && (isCorrection || (searchPerformed && selectedMember !== null))) ||
-    (step === 1 && invoiceType !== '' && encounter && serviceDate) ||
+    (step === 1 && invoiceType !== '' && encounter && operationDate) ||
     (step === 2 && step2Valid) ||
     step === 3 ||
     step === 4;
@@ -273,18 +275,29 @@ export default function GenerateInvoice() {
     navigate('/billing');
   }
 
-  const encounterLabel = ENCOUNTER_OPTIONS.find(o => o.value === encounter)?.label ?? encounter;
+  const handleCalculate = async () => {
+    setSubmitting(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    // Mock: calculate cost from operationCostInCents using coinsurance
+    const coinsurance = coinsurancePct / 100;
+    const mock = Math.round(rate * coinsurance);
+    setCalculatedCost(mock > 0 ? mock : rate);
+    setSubmitting(false);
+    setCalculated(true);
+  };
+
+  const encounterLabel = 'Surgery';
 
   return (
     <div className={step === 0 ? styles.pageWide : styles.page}>
       <div className={styles.header}>
         <button className={styles.backLink} onClick={() => navigate('/billing')}>
-          ← Back to Member payments
+          â† Back to Member payments
         </button>
         <h2 className={styles.pageTitle}>Generate invoice by member</h2>
       </div>
 
-      {/* Correction note banner — shown on all steps when reopening a correction-required invoice */}
+      {/* Correction note banner â€” shown on all steps when reopening a correction-required invoice */}
       {correctionNote && (
         <div style={{
           background: '#FDECEA',
@@ -304,7 +317,7 @@ export default function GenerateInvoice() {
       {/* Step content */}
       <div className={step === 0 ? styles.cardWide : styles.card}>
 
-        {/* ── Step 0: Select member — split layout ── */}
+        {/* â”€â”€ Step 0: Select member â€” split layout â”€â”€ */}
         {step === 0 && (
           <div className={styles.splitLayout}>
             {/* Left: search form */}
@@ -340,7 +353,7 @@ export default function GenerateInvoice() {
                 type="button"
               >
                 Advanced search
-                <span className={styles.advancedChevron}>{advancedOpen ? '▲' : '▼'}</span>
+                <span className={styles.advancedChevron}>{advancedOpen ? 'â–²' : 'â–¼'}</span>
               </button>
 
               {advancedOpen && (
@@ -392,13 +405,13 @@ export default function GenerateInvoice() {
                           <td>{m.client}</td>
                           <td>
                             {m.dependent
-                              ? <span className={styles.iconYes}>✓</span>
-                              : <span className={styles.iconNo}>✕</span>}
+                              ? <span className={styles.iconYes}>âœ“</span>
+                              : <span className={styles.iconNo}>âœ•</span>}
                           </td>
                           <td>
                             {m.app
-                              ? <span className={styles.iconYes}>✓</span>
-                              : <span className={styles.iconNo}>✕</span>}
+                              ? <span className={styles.iconYes}>âœ“</span>
+                              : <span className={styles.iconNo}>âœ•</span>}
                           </td>
                           <td>
                             <button
@@ -419,13 +432,13 @@ export default function GenerateInvoice() {
           </div>
         )}
 
-        {/* ── Step 1: Care experience selection ── */}
+        {/* â”€â”€ Step 1: Care experience selection â”€â”€ */}
         {step === 1 && (
           <div className={styles.stepContent}>
             <h3 className={styles.stepTitle}>Care experience selection</h3>
             <p className={styles.stepSubtitle}>Choose the invoice template type and care program for this member.</p>
 
-            {/* Locked member banner — only shown when editing a correction-required invoice */}
+            {/* Locked member banner â€” only shown when editing a correction-required invoice */}
             {isCorrection && existingInvoice?.memberName && (
               <div style={{
                 display: 'flex',
@@ -469,7 +482,7 @@ export default function GenerateInvoice() {
                   borderRadius: '6px',
                   padding: '4px 10px',
                 }}>
-                  🔒 Member locked
+                  ðŸ”’ Member locked
                 </div>
               </div>
             )}
@@ -506,25 +519,23 @@ export default function GenerateInvoice() {
 
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Encounter type <span className={styles.required}>*</span></label>
-                <select
-                  className={styles.formSelect}
-                  value={encounter}
-                  onChange={(e) => setEncounter(e.target.value)}
-                >
-                  <option value="">Select encounter type…</option>
-                  {ENCOUNTER_OPTIONS.map(o => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                    Encounter Type
+                  </label>
+                  <div style={{ padding: '10px 14px', background: '#EEEDF5', borderRadius: '8px', fontSize: '14px', color: '#18162F', border: '1px solid #D6D5DF' }}>
+                    Surgery
+                    <span style={{ fontSize: '11px', color: '#4C4A64', marginLeft: '8px' }}>(current release: surgery only)</span>
+                  </div>
+                </div>
               </div>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Date of service <span className={styles.required}>*</span></label>
                 <input
                   type="date"
                   className={styles.formInput}
-                  value={serviceDate}
-                  onChange={(e) => setServiceDate(e.target.value)}
+                  value={operationDate}
+                  onChange={(e) => setOperationDate(e.target.value)}
                 />
               </div>
             </div>
@@ -552,13 +563,74 @@ export default function GenerateInvoice() {
                 <p className={styles.fieldHint}>Pre-populated based on invoice type selected above.</p>
               </div>
             )}
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                Invoice Title <span style={{ color: '#C62828' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={invoiceTitle}
+                onChange={e => setInvoiceTitle(e.target.value)}
+                placeholder="e.g. Surgery Cost Share â€” Knee Replacement"
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #D6D5DF', fontSize: '14px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                Service Description <span style={{ color: '#C62828' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={serviceDescription}
+                onChange={e => setServiceDescription(e.target.value)}
+                placeholder="e.g. Total knee replacement at Cancer COE"
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #D6D5DF', fontSize: '14px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                Facility Name <span style={{ color: '#C62828' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={facilityName}
+                onChange={e => setFacilityName(e.target.value)}
+                placeholder="e.g. Texas Medical Center"
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #D6D5DF', fontSize: '14px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                Salesforce Case ID <span style={{ color: '#C62828' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={salesforceCaseId}
+                onChange={e => setSalesforceCaseId(e.target.value)}
+                placeholder="Salesforce Case ID"
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #D6D5DF', fontSize: '14px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                Salesforce Invoice ID <span style={{ color: '#C62828' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={salesforceInvoiceId}
+                onChange={e => setSalesforceInvoiceId(e.target.value)}
+                placeholder="Salesforce Invoice ID"
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #D6D5DF', fontSize: '14px', boxSizing: 'border-box' }}
+              />
+            </div>
           </div>
         )}
 
-        {/* ── Step 2: Invoice details (Cost Share) ── */}
+        {/* â”€â”€ Step 2: Invoice details (Cost Share) â”€â”€ */}
         {step === 2 && invoiceType === 'cost_share' && (
           <div className={styles.stepContent}>
-            <h3 className={styles.stepTitle}>Invoice details — Member cost share</h3>
+            <h3 className={styles.stepTitle}>Invoice details â€” Member cost share</h3>
             <p className={styles.stepSubtitle}>Enter invoice details and configure the billing type for this member.</p>
 
             {/* Cost share period */}
@@ -569,11 +641,11 @@ export default function GenerateInvoice() {
                     <p className={styles.csPeriodLabel}>Viewing cost share period</p>
                     <p className={styles.csPeriodValue}>
                       {new Date(csPeriodStart + 'T00:00:00').toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
-                      {' – '}
+                      {' â€“ '}
                       {new Date(csPeriodEnd + 'T00:00:00').toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
                     </p>
                   </div>
-                  <span className={`${styles.csPeriodChevron} ${csPeriodExpanded ? styles.csPeriodChevronOpen : ''}`}>▾</span>
+                  <span className={`${styles.csPeriodChevron} ${csPeriodExpanded ? styles.csPeriodChevronOpen : ''}`}>â–¾</span>
                 </div>
                 {csPeriodExpanded && (
                   <div className={styles.csPeriodEdit} onClick={e => e.stopPropagation()}>
@@ -608,15 +680,17 @@ export default function GenerateInvoice() {
               </div>
             )}
 
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Due date <span className={styles.required}>*</span></label>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#4C4A64', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
+                Due Date <span style={{ color: '#C62828' }}>*</span>
+              </label>
               <input
                 type="date"
-                className={styles.formInput}
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                onChange={e => setDueDate(e.target.value)}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #D6D5DF', fontSize: '14px', boxSizing: 'border-box' }}
               />
-              <p className={styles.fieldHint}>Defaults to 30 days from today.</p>
+              <div style={{ fontSize: '11px', color: '#4C4A64', marginTop: '4px' }}>Auto-set to 30 business days from surgery date. Adjust if needed.</div>
             </div>
 
             {/* Billing type section */}
@@ -625,7 +699,7 @@ export default function GenerateInvoice() {
                 Billing type
                 {isPreconfigured
                   ? <span className={styles.configBadge}>Configuration loaded</span>
-                  : <span className={styles.required}> * Required — no configuration found for this encounter type</span>
+                  : <span className={styles.required}> * Required â€” no configuration found for this encounter type</span>
                 }
               </p>
 
@@ -647,7 +721,7 @@ export default function GenerateInvoice() {
                   value={costShareType}
                   onChange={(e) => setCostShareType(e.target.value as any)}
                 >
-                  <option value="">Select billing type…</option>
+                  <option value="">Select billing typeâ€¦</option>
                   {availableTypes.map(t => (
                     <option key={t.value} value={t.value}>{t.label}</option>
                   ))}
@@ -680,11 +754,11 @@ export default function GenerateInvoice() {
                   </div>
                   <div className={styles.csStatusList}>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses deductible status for cost share
                     </div>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses out of pocket status for cost share
                     </div>
                   </div>
@@ -718,11 +792,11 @@ export default function GenerateInvoice() {
                   </div>
                   <div className={styles.csStatusList}>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses deductible status for cost share
                     </div>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses out of pocket status for cost share
                     </div>
                   </div>
@@ -748,11 +822,11 @@ export default function GenerateInvoice() {
                   </div>
                   <div className={styles.csStatusList}>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses deductible status for cost share
                     </div>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses out of pocket status for cost share
                     </div>
                   </div>
@@ -777,7 +851,7 @@ export default function GenerateInvoice() {
                   </div>
                   <div className={styles.csStatusList}>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusRed}`}>✕</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusRed}`}>âœ•</span>
                       Does not use deductible status for cost share
                     </div>
                     <label className={styles.csStatusCheckbox}>
@@ -810,11 +884,11 @@ export default function GenerateInvoice() {
                   </div>
                   <div className={styles.csStatusList}>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses deductible status for cost share
                     </div>
                     <div className={styles.csStatus}>
-                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>✓</span>
+                      <span className={`${styles.csStatusIcon} ${styles.csStatusGreen}`}>âœ“</span>
                       Uses out of pocket status for cost share
                     </div>
                   </div>
@@ -825,13 +899,13 @@ export default function GenerateInvoice() {
             {isSurgery && (
               <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Case rate ($)</label>
+                  <label className={styles.formLabel}>Operation cost (Â¢)</label>
                   <input
                     type="number"
                     className={styles.formInput}
-                    placeholder="0.00"
-                    value={caseRate}
-                    onChange={(e) => setCaseRate(e.target.value)}
+                    placeholder="0"
+                    value={operationCostInCents}
+                    onChange={(e) => setOperationCostInCents(e.target.value)}
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -846,13 +920,13 @@ export default function GenerateInvoice() {
                   <p className={styles.fieldHint}>Leave blank if no copay applies.</p>
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Case number</label>
+                  <label className={styles.formLabel}>Salesforce case number</label>
                   <input
                     type="text"
                     className={styles.formInput}
                     placeholder="e.g. TC-100842"
-                    value={caseNumber}
-                    onChange={(e) => setCaseNumber(e.target.value)}
+                    value={salesforceCaseNumber}
+                    onChange={(e) => setSalesforceCaseNumber(e.target.value)}
                   />
                   <p className={styles.fieldHint}>Required if this needs to push to Netsuite.</p>
                 </div>
@@ -875,13 +949,13 @@ export default function GenerateInvoice() {
                   </div>
                 )}
                 <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Case number <span className={styles.optional}>(situational)</span></label>
+                  <label className={styles.formLabel}>Salesforce case number <span className={styles.optional}>(situational)</span></label>
                   <input
                     type="text"
                     className={styles.formInput}
                     placeholder="Leave blank if not applicable"
-                    value={caseNumber}
-                    onChange={(e) => setCaseNumber(e.target.value)}
+                    value={salesforceCaseNumber}
+                    onChange={(e) => setSalesforceCaseNumber(e.target.value)}
                   />
                 </div>
               </div>
@@ -933,10 +1007,10 @@ export default function GenerateInvoice() {
           </div>
         )}
 
-        {/* ── Step 2: Invoice details (Recoupment) ── */}
+        {/* â”€â”€ Step 2: Invoice details (Recoupment) â”€â”€ */}
         {step === 2 && invoiceType === 'recoupment' && (
           <div className={styles.stepContent}>
-            <h3 className={styles.stepTitle}>Invoice details — Member recoupment</h3>
+            <h3 className={styles.stepTitle}>Invoice details â€” Member recoupment</h3>
             <p className={styles.stepSubtitle}>Enter the repayment amount and due date for this recoupment invoice.</p>
 
             <div className={styles.infoBanner}>
@@ -963,29 +1037,29 @@ export default function GenerateInvoice() {
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                 />
-                <p className={styles.fieldHint}>Defaults to 30 days from today.</p>
+                <p className={styles.fieldHint}>Auto-set to 30 business days from surgery date. Adjust if needed.</p>
               </div>
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Case number <span className={styles.optional}>(situational)</span></label>
+              <label className={styles.formLabel}>Salesforce case number <span className={styles.optional}>(situational)</span></label>
               <input
                 type="text"
                 className={styles.formInput}
                 placeholder="Leave blank if not applicable"
-                value={caseNumber}
-                onChange={(e) => setCaseNumber(e.target.value)}
+                value={salesforceCaseNumber}
+                onChange={(e) => setSalesforceCaseNumber(e.target.value)}
               />
             </div>
           </div>
         )}
 
-        {/* ── Step 3: Accumulator check (cost_share only) ── */}
+        {/* â”€â”€ Step 3: Accumulator check (cost_share only) â”€â”€ */}
         {step === 3 && invoiceType === 'cost_share' && (
           <div className={styles.stepContent}>
             <h3 className={styles.stepTitle}>Accumulator status check</h3>
             <p className={styles.stepSubtitle}>
-              Orbit accumulator data for {selectedMember?.name} — {availableTypes.find(t => t.value === costShareType)?.label ?? 'billing type not set'} — benefit year 2026.
+              Orbit accumulator data for {selectedMember?.name} â€” {availableTypes.find(t => t.value === costShareType)?.label ?? 'billing type not set'} â€” benefit year 2026.
             </p>
 
             {(costShareType === 'waived' || costShareType === 'fixed_cost') && (
@@ -1037,7 +1111,7 @@ export default function GenerateInvoice() {
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Already met this year (from Orbit)</span>
-                          <span className={styles.calcStepValue}>− ${deductibleMet.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>âˆ’ ${deductibleMet.toLocaleString()}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepSub}`}>
                           <span className={styles.calcStepLabel}>Remaining deductible member owes</span>
@@ -1050,7 +1124,7 @@ export default function GenerateInvoice() {
                               <span className={styles.calcStepValue}>${(rate - dedRemaining).toLocaleString()}</span>
                             </div>
                             <div className={styles.calcStep}>
-                              <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% coinsurance (entered in step 3)</span>
+                              <span className={styles.calcStepLabel}>Ã— {effectiveCoinsurancePct}% coinsurance (entered in step 3)</span>
                               <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
                             </div>
                           </>
@@ -1085,7 +1159,7 @@ export default function GenerateInvoice() {
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Already met this year (from Orbit)</span>
-                          <span className={styles.calcStepValue}>− ${deductibleMet.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>âˆ’ ${deductibleMet.toLocaleString()}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepSub}`}>
                           <span className={styles.calcStepLabel}>Remaining deductible member owes</span>
@@ -1098,7 +1172,7 @@ export default function GenerateInvoice() {
                               <span className={styles.calcStepValue}>${(rate - dedRemaining).toLocaleString()}</span>
                             </div>
                             <div className={styles.calcStep}>
-                              <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% coinsurance (from insurance plan)</span>
+                              <span className={styles.calcStepLabel}>Ã— {effectiveCoinsurancePct}% coinsurance (from insurance plan)</span>
                               <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
                             </div>
                           </>
@@ -1136,7 +1210,7 @@ export default function GenerateInvoice() {
                         </div>
                         <div className={styles.calcStep}>
                           <span className={styles.calcStepLabel}>Already met this year (from Orbit)</span>
-                          <span className={styles.calcStepValue}>− ${dedMet.toLocaleString()}</span>
+                          <span className={styles.calcStepValue}>âˆ’ ${dedMet.toLocaleString()}</span>
                         </div>
                         <div className={`${styles.calcStep} ${styles.calcStepSub}`}>
                           <span className={styles.calcStepLabel}>Remaining deductible member owes</span>
@@ -1149,7 +1223,7 @@ export default function GenerateInvoice() {
                               <span className={styles.calcStepValue}>${(rate - customDedRemaining).toLocaleString()}</span>
                             </div>
                             <div className={styles.calcStep}>
-                              <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% coinsurance (entered in step 3)</span>
+                              <span className={styles.calcStepLabel}>Ã— {effectiveCoinsurancePct}% coinsurance (entered in step 3)</span>
                               <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
                             </div>
                           </>
@@ -1202,7 +1276,7 @@ export default function GenerateInvoice() {
                               <span className={styles.calcStepValue}>${(rate - dedRemaining).toLocaleString()}</span>
                             </div>
                             <div className={styles.calcStep}>
-                              <span className={styles.calcStepLabel}>× {effectiveCoinsurancePct}% after deductible (entered in step 3)</span>
+                              <span className={styles.calcStepLabel}>Ã— {effectiveCoinsurancePct}% after deductible (entered in step 3)</span>
                               <span className={styles.calcStepValue}>${postDedAmount.toFixed(2)}</span>
                             </div>
                           </>
@@ -1233,7 +1307,7 @@ export default function GenerateInvoice() {
                   type="button"
                 >
                   <span>Bypass accumulators</span>
-                  <span className={styles.bypassToggleChevron}>{bypassExpanded ? '▲' : '▼'}</span>
+                  <span className={styles.bypassToggleChevron}>{bypassExpanded ? 'â–²' : 'â–¼'}</span>
                 </button>
 
                 {bypassExpanded && <div className={styles.fieldSection}>
@@ -1246,7 +1320,7 @@ export default function GenerateInvoice() {
                       value={bypassReason}
                       onChange={(e) => { setBypassReason(e.target.value); setManualOverride(e.target.value !== ''); }}
                     >
-                      <option value="">Select a reason…</option>
+                      <option value="">Select a reasonâ€¦</option>
                       <option value="orbit_unavailable">Orbit data unavailable</option>
                       <option value="carrier_confirmed">Accumulators confirmed via carrier call</option>
                       <option value="prior_year">Prior year billing (coverage ended)</option>
@@ -1311,12 +1385,65 @@ export default function GenerateInvoice() {
                     </>
                   )}
                 </div>}
+
+                {/* Override accumulator values section */}
+                <div style={{ marginTop: '16px', borderTop: '1px solid #D6D5DF', paddingTop: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowOverrides(!showOverrides)}
+                    style={{ background: 'none', border: 'none', color: '#5651BD', fontSize: '13px', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+                  >
+                    {showOverrides ? 'â–¾' : 'â–¸'} Override accumulator values (Orbit unavailable)
+                  </button>
+                  {showOverrides && (
+                    <div style={{ marginTop: '12px', background: '#FFF3CD', border: '1.5px solid #F9A825', borderRadius: '10px', padding: '14px 24px' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#7A4F00', marginBottom: '10px' }}>Manual accumulator override</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                        {[
+                          { label: 'Spent Individual Deductible', key: 'spentIndDed' },
+                          { label: 'Max Individual Deductible', key: 'maxIndDed' },
+                          { label: 'Spent Family Deductible', key: 'spentFamDed' },
+                          { label: 'Max Family Deductible', key: 'maxFamDed' },
+                          { label: 'Spent Individual OOP', key: 'spentIndOop' },
+                          { label: 'Max Individual OOP', key: 'maxIndOop' },
+                          { label: 'Spent Family OOP', key: 'spentFamOop' },
+                          { label: 'Max Family OOP', key: 'maxFamOop' },
+                        ].map(f => (
+                          <div key={f.key}>
+                            <label style={{ fontSize: '11px', fontWeight: 600, color: '#7A4F00', display: 'block', marginBottom: '4px' }}>{f.label} (Â¢)</label>
+                            <input type="number" min="0" placeholder="0" style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #F9A825', fontSize: '13px', boxSizing: 'border-box' }} />
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                        <label style={{ fontSize: '11px', fontWeight: 600, color: '#7A4F00', display: 'block', marginBottom: '4px' }}>Override reason *</label>
+                        <select value={overrideReason} onChange={e => setOverrideReason(e.target.value)} style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #F9A825', fontSize: '13px' }}>
+                          <option value="">Select reasonâ€¦</option>
+                          <option value="EligibilityTiering">Eligibility Tiering</option>
+                          <option value="NonEmbeddedPlanIndividualCoverage">Non-Embedded Plan with individual coverage</option>
+                          <option value="NoMemberIdAvailable">No Member ID available</option>
+                          <option value="InvalidHealthPlanPlaceholderOrPriorYear">Invalid Health Plan (placeholder or prior year)</option>
+                          <option value="HealthPlanConfigurationIssue">Health Plan Configuration Issue</option>
+                          <option value="CostShareConfigurationIssue">Cost Share Configuration Issue</option>
+                          <option value="NoAccumulatorDataViaOrbit">No Accumulator data available via Orbit</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      {overrideReason === 'Other' && (
+                        <div>
+                          <label style={{ fontSize: '11px', fontWeight: 600, color: '#7A4F00', display: 'block', marginBottom: '4px' }}>Additional details *</label>
+                          <textarea value={overrideDetails} onChange={e => setOverrideDetails(e.target.value)} rows={2} style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #F9A825', fontSize: '13px', boxSizing: 'border-box', resize: 'vertical' }} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
         )}
 
-        {/* ── Review & submit (last step) ── */}
+        {/* â”€â”€ Review & submit (last step) â”€â”€ */}
         {((invoiceType === 'recoupment' && step === 3) || (invoiceType === 'cost_share' && step === 4) || (invoiceType === '' && step === 4)) && (
           <div className={styles.stepContent}>
             <h3 className={styles.stepTitle}>Review & submit</h3>
@@ -1337,12 +1464,15 @@ export default function GenerateInvoice() {
                   <div className={styles.reviewDivider} />
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Invoice type</span><span className={styles.reviewVal}>{invoiceType === 'cost_share' ? 'Member Cost Share' : 'Member Recoupment'}</span></div>
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Encounter type</span><span className={styles.reviewVal}>{encounterLabel}</span></div>
-                  <div className={styles.reviewItem}><span className={styles.reviewKey}>Date of service</span><span className={styles.reviewVal}>{serviceDate}</span></div>
+                  <div className={styles.reviewItem}><span className={styles.reviewKey}>Date of service</span><span className={styles.reviewVal}>{operationDate}</span></div>
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Reference #</span><span className={styles.reviewVal}>{refNumber}</span></div>
                   <div className={styles.reviewDivider} />
-                  {invoiceType === 'recoupment' &&<div className={styles.reviewItem}><span className={styles.reviewKey}>Repayment amount</span><span className={styles.reviewVal}>${parseFloat(repaymentAmount||'0').toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>}
-                  {caseRate && <div className={styles.reviewItem}><span className={styles.reviewKey}>Case rate</span><span className={styles.reviewVal}>${parseFloat(caseRate).toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>}
-                  {caseNumber && <div className={styles.reviewItem}><span className={styles.reviewKey}>Case number</span><span className={styles.reviewVal}>{caseNumber}</span></div>}
+                  {invoiceType === 'recoupment' &&<div className={styles.reviewItem}><span className={styles.reviewKey}>Repayment amount</span><span className={styles.reviewVal}>{formatCents(Math.round(parseFloat(repaymentAmount||'0') * 100))}</span></div>}
+                  {operationCostInCents && <div className={styles.reviewItem}><span className={styles.reviewKey}>Operation cost</span><span className={styles.reviewVal}>{formatCents(Math.round(parseFloat(operationCostInCents)))}</span></div>}
+                  {salesforceCaseNumber && <div className={styles.reviewItem}><span className={styles.reviewKey}>Salesforce case number</span><span className={styles.reviewVal}>{salesforceCaseNumber}</span></div>}
+                  {salesforceCaseId && <div className={styles.reviewItem}><span className={styles.reviewKey}>Salesforce case ID</span><span className={styles.reviewVal}>{salesforceCaseId}</span></div>}
+                  {salesforceInvoiceId && <div className={styles.reviewItem}><span className={styles.reviewKey}>Salesforce invoice ID</span><span className={styles.reviewVal}>{salesforceInvoiceId}</span></div>}
+                  {invoiceTitle && <div className={styles.reviewItem}><span className={styles.reviewKey}>Invoice title</span><span className={styles.reviewVal}>{invoiceTitle}</span></div>}
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Due date</span><span className={styles.reviewVal}>{dueDate}</span></div>
                   <div className={styles.reviewDivider} />
                   <div className={styles.reviewItem}><span className={styles.reviewKey}>Submitted by</span><span className={styles.reviewVal}>Brandi Breshears</span></div>
@@ -1373,7 +1503,7 @@ export default function GenerateInvoice() {
                     </>
                   )}
                   {invoiceType === 'recoupment' && (
-                    <div className={styles.reviewItem}><span className={styles.reviewKey}>Billing model</span><span className={styles.reviewVal}>Fixed recoupment — no accumulator check</span></div>
+                    <div className={styles.reviewItem}><span className={styles.reviewKey}>Billing model</span><span className={styles.reviewVal}>Fixed recoupment â€” no accumulator check</span></div>
                   )}
                 </div>
 
@@ -1384,7 +1514,7 @@ export default function GenerateInvoice() {
                   </div>
                   {invoiceType === 'cost_share' && !manualOverride && costShareType !== 'waived' && (
                     <button className={styles.recalcLink} onClick={() => setStep(3)} type="button">
-                      ← Recalculate
+                      â† Recalculate
                     </button>
                   )}
                   {costShareType === 'waived' && (
@@ -1392,6 +1522,39 @@ export default function GenerateInvoice() {
                   )}
                   {manualOverride && (
                     <div className={styles.invoiceAmountNote}>Manual override applied</div>
+                  )}
+                </div>
+
+                {/* Calculate â†’ Review â†’ Approve two-phase flow */}
+                <div style={{ marginTop: '20px' }}>
+                  {!calculated ? (
+                    <div>
+                      <div style={{ background: '#E8F4FD', border: '1.5px solid #1565C0', borderRadius: '10px', padding: '14px 24px', marginBottom: '16px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#1565C0', marginBottom: '6px' }}>Ready to calculate</div>
+                        <p style={{ fontSize: '14px', color: '#18162F', margin: 0 }}>
+                          Click Calculate to run the cost share calculation. You'll review the result before the invoice is issued.
+                        </p>
+                      </div>
+                      <Button appearance="primary" onClick={handleCalculate} disabled={submitting}>
+                        {submitting ? 'Calculatingâ€¦' : 'Calculate invoice'}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ background: '#EAF3DE', border: '1.5px solid #2E7D32', borderRadius: '10px', padding: '14px 24px', marginBottom: '16px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#2E7D32', marginBottom: '6px' }}>Calculation complete</div>
+                        <div style={{ fontSize: '22px', fontWeight: 700, color: '#18162F', marginBottom: '4px' }}>{formatCents(calculatedCost)}</div>
+                        <p style={{ fontSize: '13px', color: '#4C4A64', margin: 0 }}>Member cost share â€” review then approve to issue the invoice.</p>
+                      </div>
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <Button appearance="primary" onClick={handleSubmit} disabled={submitting}>
+                          {submitting ? 'Processingâ€¦' : isCorrection ? 'Resubmit invoice' : 'Approve & issue invoice'}
+                        </Button>
+                        <Button appearance="secondary" onClick={() => setCalculated(false)}>
+                          Recalculate
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1442,11 +1605,7 @@ export default function GenerateInvoice() {
               <Button appearance="primary" onClick={handleNext} disabled={!canProceed}>
                 Continue
               </Button>
-            ) : (
-              <Button appearance="primary" onClick={handleSubmit}>
-                Submit for approval
-              </Button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
