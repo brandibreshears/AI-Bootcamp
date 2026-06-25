@@ -89,6 +89,49 @@
   opacity: 1;
 }
 
+.navSection {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 14px 12px 4px;
+}
+
+.subNav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-bottom: 4px;
+}
+
+.subNavItem {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px 6px 40px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--border-radius-m);
+  text-decoration: none;
+  margin: 1px 6px;
+  transition: background-color var(--motion-duration-fast), color var(--motion-duration-fast);
+}
+
+.subNavItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+
+.subNavItemActive {
+  color: #c8c6f0;
+  background: rgba(86, 81, 189, 0.25);
+  font-weight: 600;
+  border-left: 3px solid #aba8de;
+  padding-left: 37px;
+}
+
 .footer {
   padding: var(--spacing-s) var(--spacing-m);
   border-top: 1px solid rgba(255, 255, 255, 0.08);

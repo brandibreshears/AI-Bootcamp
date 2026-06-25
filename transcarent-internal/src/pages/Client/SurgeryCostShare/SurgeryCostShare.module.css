@@ -1,0 +1,1753 @@
+/* ── Page layout ─────────────────────────────────────────────────────────── */
+
+.page {
+  padding: 24px 32px;
+  background: var(--color-background-page, #eeedf5);
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.breadcrumb span { margin: 0 4px; }
+.breadcrumb strong { color: #444; }
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #18162f;
+  margin: 0;
+}
+
+.headerSearch {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 260px;
+}
+
+.searchByLabel {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+/* Period row sits directly below the title, left-aligned — matches DEV */
+.periodRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.periodSelector {
+  display: flex;
+  flex-direction: column;
+}
+
+.periodLabel {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.periodValue {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #18162f;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 12px;
+  min-width: 200px;
+}
+
+.managePeriodLink {
+  background: none;
+  border: none;
+  color: #5651bd;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+/* ── Warning banner ───────────────────────────────────────────────────────── */
+
+.warningBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff9e6;
+  border: 1px solid #f0c040;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.warningIcon {
+  font-size: 18px;
+  color: #c8860a;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.warningText { color: #666; margin-top: 3px; }
+
+/* ── Filters ──────────────────────────────────────────────────────────────── */
+
+.filtersRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filterGroup { display: flex; align-items: center; gap: 8px; }
+
+.filterLabel { font-size: 13px; color: #555; font-weight: 500; }
+
+.filterSelect {
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  background: #fff;
+  color: #18162f;
+}
+
+.searchWrapper {
+  position: relative;
+  width: 280px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 38px;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 8px;
+  padding: 0 12px 0 34px;
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.searchInput:focus { outline: 2px solid #5651bd; border-color: transparent; }
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+
+.tableWrapper {
+  background: #fff;
+  border: 1px solid #e5e3f0;
+  border-radius: 12px;
+  overflow: auto;
+}
+
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tableCompact { width: auto; min-width: 0; }
+
+.th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #666;
+  border-bottom: 1px solid #e8e6f5;
+  background: #f8f7fc;
+  white-space: nowrap;
+}
+
+.tr:hover { background: #f9f8fc; }
+
+.td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0eefa;
+  vertical-align: top;
+}
+
+.tr:last-child .td { border-bottom: none; }
+
+.planName { font-weight: 600; color: #18162f; margin-bottom: 2px; }
+.planGroup { font-size: 11px; color: #888; }
+
+.yearBadge {
+  display: inline-block;
+  background: #eeecfa;
+  color: #4a46aa;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.hdhpBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f9f0;
+  color: #1a7a4a;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.hdhpCheck { font-size: 10px; }
+
+/* Product cell */
+
+.productCell { display: flex; flex-direction: column; gap: 2px; }
+
+.productCellLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+}
+
+.viewLink {
+  background: none;
+  border: none;
+  color: #5651bd;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.productCellBilling {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+}
+
+.productCellSummary { font-size: 10px; color: #888; }
+
+/* Tier detail list inside a product cell */
+.tierDetailList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 3px;
+}
+
+.tierDetailRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tierDetailBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #4a46aa;
+  background: #eeecfa;
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tierDetailValues {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 11px;
+  color: #333;
+  font-weight: 500;
+}
+
+.tierDetailSep {
+  color: #bbb;
+  font-size: 10px;
+}
+
+.tierDetailDim {
+  font-size: 9px;
+  color: #999;
+  font-weight: 400;
+}
+
+.addLink {
+  background: none;
+  border: none;
+  color: #5651bd;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* ── Panel backdrop ───────────────────────────────────────────────────────── */
+
+.panelBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 22, 47, 0.35);
+  z-index: 200;
+}
+
+/* ── Side panel ───────────────────────────────────────────────────────────── */
+
+.panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 580px;
+  background: #fff;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.16);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e8e6f5;
+  background: #f8f7fc;
+  flex-shrink: 0;
+}
+
+.panelHeaderLabel { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.07em; }
+.panelHeaderTitle { font-size: 16px; font-weight: 700; color: #18162f; margin-top: 4px; }
+.panelHeaderSub { font-size: 12px; color: #777; margin-top: 2px; }
+
+.panelClose {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: #666;
+  line-height: 1;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.panelBody { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+.panelSection { margin-bottom: 24px; }
+
+.panelSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #18162f;
+  margin-bottom: 16px;
+}
+
+.panelSectionIcon { font-size: 16px; }
+
+/* ── Fields ───────────────────────────────────────────────────────────────── */
+
+.fieldGroup { display: flex; flex-direction: column; gap: 5px; }
+
+.fieldLabel { font-size: 12px; font-weight: 600; color: #444; }
+
+.fieldSelect,
+.fieldInput {
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162f;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fieldSelect:focus,
+.fieldInput:focus { outline: 2px solid #5651bd; border-color: transparent; }
+
+/* ── Plan structure indicator (read-only, from health plan config) ─────────── */
+
+.planStructureRow {
+  background: #f8f7fc;
+  border: 1px solid #e5e3f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+.planStructureTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.planStructureHeading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #555;
+}
+
+.planStructureNote {
+  font-size: 10px;
+  color: #aaa;
+  font-style: italic;
+}
+
+.planStructurePills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.structurePill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* Green tint for embedded (more protective, individual thresholds active) */
+.pillEmbedded {
+  background: #e6f4ec;
+  color: #1a6e3e;
+  border: 1px solid #b8dfc8;
+}
+
+/* Amber tint for non-embedded (aggregate — family must meet threshold collectively) */
+.pillNonEmbedded {
+  background: #fef6e4;
+  color: #8a5a00;
+  border: 1px solid #f0d080;
+}
+
+/* Neutral chip for the derived plan type label */
+.pillType {
+  background: #eeecfa;
+  color: #4a46aa;
+  border: 1px solid #d4d0f2;
+}
+
+/* ── Info banner ──────────────────────────────────────────────────────────── */
+
+.eligInfoBanner {
+  background: #f0eefa;
+  border: 1px solid #d4d0f2;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #4a46aa;
+  margin-bottom: 14px;
+}
+
+/* ── Eligibility tier table ───────────────────────────────────────────────── */
+
+.eligTable {
+  border: 1px solid #e8e6f5;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+/* Grid: toggle | tier label | indiv ded | aggregate ded | coinsurance */
+.eligTableHeader,
+.eligTableRow {
+  display: grid;
+  grid-template-columns: 44px 160px 1fr 1fr 90px;
+  align-items: center;
+}
+
+.eligTableHeader {
+  background: #f8f7fc;
+  border-bottom: 1px solid #e8e6f5;
+  padding: 0 8px;
+}
+
+.eligTableHeader > div {
+  padding: 8px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eligTableRow {
+  padding: 0 8px;
+  border-bottom: 1px solid #f0eefa;
+  transition: background 0.12s;
+}
+
+.eligTableRow:last-child { border-bottom: none; }
+.eligTableRow:hover { background: #faf9fd; }
+
+.eligRowDisabled { opacity: 0.45; }
+
+.eligColToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.eligColTier {
+  padding: 8px 6px;
+}
+
+.eligColField {
+  padding: 8px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.colTooltip {
+  color: #aaa;
+  cursor: help;
+  font-size: 11px;
+}
+
+/* ── Toggle switch ────────────────────────────────────────────────────────── */
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  display: block;
+  width: 32px;
+  height: 18px;
+  background: #ccc;
+  border-radius: 9px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggleTrack::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle input:checked + .toggleTrack {
+  background: #5651bd;
+}
+
+.toggle input:checked + .toggleTrack::after {
+  transform: translateX(14px);
+}
+
+/* ── Tier badge ───────────────────────────────────────────────────────────── */
+
+.tierBadge {
+  display: inline-block;
+  background: #eeecfa;
+  color: #4a46aa;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tierBadgeOff {
+  background: #f0f0f0;
+  color: #aaa;
+}
+
+/* ── Eligibility inputs ───────────────────────────────────────────────────── */
+
+.eligInput {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162f;
+  background: #fff;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+.eligInput:focus { outline: 2px solid #5651bd; border-color: transparent; }
+.eligInput:disabled { background: #f5f4fa; color: #bbb; cursor: not-allowed; }
+.eligInput::placeholder { color: #ccc; }
+
+.eligInputCenter { text-align: center; }
+
+/* N/A label for single-member tier aggregate column */
+.naLabel {
+  display: block;
+  width: 100%;
+  text-align: right;
+  font-size: 11px;
+  color: #c0bdd8;
+  font-style: italic;
+  cursor: help;
+}
+
+/* ── Checkbox rows ────────────────────────────────────────────────────────── */
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.checkLabel { font-size: 12px; color: #444; }
+
+/* ── Panel footer ─────────────────────────────────────────────────────────── */
+
+.panelFooter {
+  padding: 14px 24px;
+  border-top: 1px solid #e8e6f5;
+  background: #faf9fc;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.applyAllRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.applyAllLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #444;
+}
+
+.footerActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ── Version toggle bar ───────────────────────────────────────────────────── */
+
+.versionBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.versionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #888;
+}
+
+.versionToggleGroup {
+  display: flex;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.versionBtn {
+  background: #fff;
+  border: none;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.versionBtn + .versionBtn { border-left: 1.5px solid #c8c5e8; }
+
+.versionBtnActive {
+  background: #5651bd;
+  color: #fff;
+}
+
+.versionNote {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+}
+
+/* ── V2 status filter bar ─────────────────────────────────────────────────── */
+
+.v2StatusFilterBar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.v2StatusFilterChip {
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #666;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.v2ChipFilterActive {
+  background: #eeecfa;
+  border-color: #5651bd;
+  color: #5651bd;
+}
+
+/* ── V2 plan type pills ───────────────────────────────────────────────────── */
+
+.v2PlanTypePill {
+  display: inline-block;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.v2PillPPO   { background: #e8f0fe; color: #1a56c4; }
+.v2PillHDHP  { background: #e8f9f0; color: #1a7a4a; }
+.v2PillCOBRA { background: #fef6e4; color: #8a5a00; }
+
+/* ── V2 product cell ──────────────────────────────────────────────────────── */
+
+.v2Cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.v2CellTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.v2StatusChip {
+  display: inline-block;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.v2ChipConfigured { background: #e8f0fe; color: #1a56c4; }
+.v2ChipWaived     { background: #e8f9f0; color: #1a7a4a; }
+.v2ChipMissing    { background: #fff3e0; color: #b45309; }
+
+.v2BillingLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #444;
+}
+
+.v2ReportingRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed #e5e3f0;
+}
+
+.v2ReportingLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+}
+
+.v2ReportingValue {
+  font-size: 10px;
+  color: #777;
+  flex: 1;
+}
+
+/* ── V2 panel header ──────────────────────────────────────────────────────── */
+
+.v2PanelHeaderContent { flex: 1; }
+
+.v2PanelTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ── V2 panel product bar (billing type tabs) ─────────────────────────────── */
+
+.v2PanelProductBar {
+  padding: 14px 24px;
+  border-bottom: 1px solid #e8e6f5;
+  background: #faf9fc;
+  flex-shrink: 0;
+}
+
+.v2PanelProductLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #18162f;
+  margin-bottom: 10px;
+}
+
+.v2SegmentedControl {
+  display: flex;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.v2Segment {
+  background: #fff;
+  border: none;
+  border-right: 1.5px solid #c8c5e8;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #666;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.14s, color 0.14s;
+}
+
+.v2Segment:last-child { border-right: none; }
+
+.v2SegmentActive {
+  background: #5651bd;
+  color: #fff;
+}
+
+/* ── V2 billing type bodies ───────────────────────────────────────────────── */
+
+.v2BillingBody { display: flex; flex-direction: column; gap: 0; }
+
+.v2WaivedBanner {
+  background: #e8f9f0;
+  border: 1px solid #b8dfc8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #1a6e3e;
+}
+
+.v2InfoBanner {
+  background: #f0eefa;
+  border: 1px solid #d4d0f2;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #4a46aa;
+  margin-bottom: 14px;
+}
+
+.v2HdhpWarning {
+  background: #fff3e0;
+  border: 1px solid #fcd08a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #8a5a00;
+  margin-bottom: 12px;
+}
+
+.v2ReadOnlyGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.v2ReadOnlyField {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.v2ReadOnlyLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+}
+
+.v2ReadOnlyValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f4fa;
+  border: 1px solid #e5e3f0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #18162f;
+}
+
+.v2SourceBadge {
+  font-size: 10px;
+  font-weight: 700;
+  background: #eeecfa;
+  color: #4a46aa;
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+
+.v2ReportingSubSection {
+  border: 1px solid #e8e6f5;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  background: #faf9fc;
+}
+
+.v2ReportingSubLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #5651bd;
+  margin-bottom: 10px;
+}
+
+.v2WaivedLockBanner {
+  background: #f5f4fc;
+  border: 1px solid #c8c5e8;
+  border-left: 3px solid #5651bd;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 12px;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.v2ClaimsConflict {
+  background: #fff3cd;
+  border: 1px solid #e8b84b;
+  border-left: 3px solid #e8b84b;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #7a5500;
+}
+
+.v2InfoIcon {
+  font-size: 12px;
+  color: #888;
+  margin-left: 5px;
+  cursor: help;
+}
+
+.v2Advisory {
+  background: #fffbe6;
+  border: 1px solid #f0d080;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 11px;
+  color: #8a6000;
+}
+
+.v2ChecksRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.v2RefreshBtn {
+  margin-top: 14px;
+  background: none;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #5651bd;
+  cursor: pointer;
+  width: fit-content;
+}
+
+/* Tier completion indicator */
+.v2TierCompletion {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.v2TierCompletionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+}
+
+.v2TierProgressBar {
+  height: 5px;
+  background: #e8e6f5;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.v2TierProgressFill {
+  height: 100%;
+  background: #5651bd;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* ── Reporting section in V2 panel ────────────────────────────────────────── */
+
+.v2ReportingDivider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 12px;
+}
+
+.v2ReportingDivider::before,
+.v2ReportingDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e8e6f5;
+}
+
+.v2ReportingDividerLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.v2ReportingPanel {
+  background: #f8f7fc;
+  border: 1px solid #e5e3f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+/* ── V2 panel footer ──────────────────────────────────────────────────────── */
+
+.v2FooterTop {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.v2BulkBtn {
+  background: none;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #5651bd;
+  cursor: pointer;
+  transition: background 0.14s;
+}
+
+.v2BulkBtn:hover { background: #f0eefa; }
+
+/* ── Copy prior period button ─────────────────────────────────────────────── */
+
+.v2CopyPriorBtn {
+  background: none;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #5651bd;
+  cursor: pointer;
+}
+
+/* ── Bulk config modal ────────────────────────────────────────────────────── */
+
+.bulkBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 22, 47, 0.45);
+  z-index: 300;
+}
+
+.bulkModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(860px, calc(100vw - 48px));
+  max-height: calc(100vh - 80px);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.22);
+  z-index: 301;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bulkModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e8e6f5;
+  background: #f8f7fc;
+  flex-shrink: 0;
+}
+
+.bulkModalTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #18162f;
+}
+
+.bulkModalSub {
+  font-size: 12px;
+  color: #777;
+  margin-top: 3px;
+}
+
+.bulkModalBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.bulkLeft {
+  padding: 20px 24px;
+  border-right: 1px solid #e8e6f5;
+  overflow-y: auto;
+}
+
+.bulkRight {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.bulkSectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.bulkFilterRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bulkPlanList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.bulkPlanRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1.5px solid #e8e6f5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.bulkPlanRow:hover { background: #faf9fd; }
+
+.bulkPlanRowSelected {
+  border-color: #5651bd;
+  background: #f4f3fc;
+}
+
+.bulkPlanInfo { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+.bulkPlanName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #18162f;
+}
+
+.bulkPlanMeta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bulkModalFooter {
+  padding: 14px 24px;
+  border-top: 1px solid #e8e6f5;
+  background: #faf9fc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.bulkSelectedCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5651bd;
+}
+
+/* ── V2 row-level status coloring ─────────────────────────────────────────── */
+/* Left accent border applied via first td — gives a clear row-level signal    */
+
+.v2RowComplete td:first-child { border-left: 4px solid #1a7a4a; }
+.v2RowPartial  td:first-child { border-left: 4px solid #b45309; }
+.v2RowEmpty    td:first-child { border-left: 4px solid #dc2626; }
+
+/* Subtle row background tint pairs with the border for easier scanning */
+.v2RowComplete { background: #fafffe; }
+.v2RowPartial  { background: #fffdf8; }
+.v2RowEmpty    { background: #fffafa; }
+
+/* ── V2 carrier name display ──────────────────────────────────────────────── */
+
+.v2CarrierName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #18162f;
+  font-weight: 500;
+}
+
+.v2CarrierNameLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+}
+
+/* Carrier name in the table cell (V2 plan name column) */
+.v2CarrierNameInCell {
+  font-size: 10px;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* ── Client demo switcher ─────────────────────────────────────────────────── */
+
+.clientSwitcherBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #f4f3fc;
+  border: 1.5px solid #c8c5e8;
+  border-radius: 10px;
+}
+
+.clientSwitcherLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #5651bd;
+  white-space: nowrap;
+}
+
+.clientSwitcherGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.clientSwitcherBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: border-color 0.14s, background 0.14s;
+  min-width: 140px;
+}
+
+.clientSwitcherBtn:hover { border-color: #9b97d8; background: #faf9fd; }
+
+.clientSwitcherBtnActive {
+  border-color: #5651bd;
+  background: #eeecfa;
+}
+
+.clientSwitcherKey {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5651bd;
+  margin-bottom: 1px;
+}
+
+.clientSwitcherName {
+  font-size: 12px;
+  font-weight: 700;
+  color: #18162f;
+}
+
+.clientSwitcherDesc {
+  font-size: 10px;
+  color: #888;
+  margin-top: 1px;
+}
+
+.clientSwitcherHint {
+  font-size: 11px;
+  color: #777;
+  font-style: italic;
+  margin-left: auto;
+}
+
+/* ── Reporting method body ────────────────────────────────────────────────── */
+
+.v2ReportingMethodBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Carrier confirmed banner (automated path) */
+.v2CarrierConfirmed {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #e8f9f0;
+  border: 1px solid #b8dfc8;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.v2CarrierConfirmedIcon {
+  font-size: 16px;
+  color: #1a7a4a;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.v2CarrierConfirmedName {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a7a4a;
+}
+
+.v2CarrierConfirmedSub {
+  font-size: 11px;
+  color: #2d8a5e;
+  margin-top: 2px;
+}
+
+/* Supported carriers list */
+.v2SupportedCarrierList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.v2SupportedCarrierLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+  margin-bottom: 2px;
+}
+
+.v2SupportedCarrierItem {
+  font-size: 11px;
+  color: #666;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.v2SupportedCarrierMatch {
+  background: #e8f9f0;
+  color: #1a6e3e;
+  font-weight: 600;
+}
+
+/* Manual email input rows */
+.v2EmailRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.v2EmailRow .fieldInput { flex: 1; margin-bottom: 0; }
+
+.v2EmailRemove {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #999;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+.v2AddEmailBtn {
+  background: none;
+  border: none;
+  color: #5651bd;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 8px;
+}
+
+/* Contact cards for manual reporting */
+.v2ContactList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.v2ContactCard {
+  border: 1px solid #e5e3f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #faf9fc;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.v2ContactCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.v2ContactCardLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #888;
+}
+
+/* ── Copy from Prior Year Modal ─────────────────────────────────────────────── */
+
+.copyModalOverlay {
+  position: fixed; inset: 0; background: rgba(24,22,47,0.45); z-index: 300;
+}
+
+.copyModalBox {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 301; width: min(900px, 94vw); max-height: 88vh;
+  background: #fff; border-radius: 14px; display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(24,22,47,0.22);
+}
+
+.copyModalHeader {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 22px 24px 16px; border-bottom: 1px solid #e8e6f5; flex-shrink: 0;
+}
+
+.copyModalTitle {
+  font-size: 17px; font-weight: 700; color: #18162f; margin-bottom: 4px;
+}
+
+.copyModalSubtitle {
+  font-size: 12px; color: #666; max-width: 580px; line-height: 1.5;
+}
+
+.copyModalClose {
+  background: none; border: none; font-size: 16px; color: #888;
+  cursor: pointer; padding: 4px 8px; border-radius: 6px; flex-shrink: 0;
+}
+.copyModalClose:hover { background: #f0eef8; color: #18162f; }
+
+.copyModalIrsBanner {
+  background: #fff8e6; border-bottom: 1px solid #f0d080;
+  padding: 10px 24px; font-size: 12px; color: #7a5500; flex-shrink: 0;
+  line-height: 1.5;
+}
+
+.copyModalBody {
+  overflow-y: auto; padding: 20px 24px; flex: 1; display: flex;
+  flex-direction: column; gap: 14px;
+}
+
+.copyModalPlanCard {
+  border: 1px solid #e8e6f5; border-radius: 10px; overflow: hidden;
+}
+
+.copyModalPlanHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: #f8f7fc; border-bottom: 1px solid #e8e6f5;
+}
+
+.copyModalPlanName {
+  font-size: 13px; font-weight: 700; color: #18162f;
+}
+
+.copyModalPlanMeta {
+  font-size: 11px; color: #888; margin-top: 2px;
+}
+
+.copyModalTableHeader {
+  display: grid;
+  grid-template-columns: 130px 1fr 1fr 160px;
+  padding: 7px 16px; background: #f3f2fb;
+  border-bottom: 1px solid #e8e6f5;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: #888;
+}
+
+.copyModalTableRow {
+  display: grid;
+  grid-template-columns: 130px 1fr 1fr 160px;
+  padding: 10px 16px; border-bottom: 1px solid #f0eef8;
+  align-items: center; gap: 0; min-height: 52px;
+}
+.copyModalTableRow:last-child { border-bottom: none; }
+
+.copyModalRowKeep   { background: #fafffe; }
+.copyModalRowFresh  { background: #fff8f8; opacity: 0.75; }
+.copyModalRowNoData { background: #fafafa; }
+
+.copyModalColProduct {
+  padding-right: 12px;
+}
+.copyModalColConfig, .copyModalColReporting {
+  padding-right: 12px; font-size: 12px; color: #444;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.copyModalColAction {
+  display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+}
+
+.copyModalProductLabel {
+  font-size: 11px; font-weight: 700; color: #5651bd;
+}
+
+.copyModalNoData {
+  font-size: 11px; color: #bbb; font-style: italic;
+}
+
+.copyModalBillingChip {
+  display: inline-block; background: #eeedf8; border-radius: 4px;
+  padding: 2px 7px; font-size: 11px; font-weight: 600; color: #5651bd;
+  width: fit-content;
+}
+
+.copyModalIrsInline {
+  font-size: 11px; color: #555;
+}
+
+.copyModalTierInline {
+  font-size: 11px; color: #666;
+}
+
+.copyModalTierOld {
+  color: #aaa; text-decoration: line-through; font-size: 11px;
+}
+
+.copyModalTierNew {
+  color: #1a7a4a; font-weight: 700; font-size: 11px;
+}
+
+.copyModalReportingMethod { color: #aaa; font-size: 11px; }
+
+.copyModalContactRow {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px;
+}
+
+.copyModalContactChip {
+  background: #f0eef8; border-radius: 4px; padding: 2px 6px;
+  font-size: 10px; color: #5651bd;
+}
+
+.copyModalDecision {
+  display: flex; gap: 5px;
+}
+
+.copyModalDecisionBtn {
+  padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid #e5e3f0; background: #fff; color: #888;
+  transition: all 0.12s; white-space: nowrap;
+}
+.copyModalDecisionBtn:hover { border-color: #c8c5e8; color: #5651bd; }
+
+.copyModalDecisionKeep {
+  border-color: #1a7a4a; background: #f0faf5; color: #1a7a4a;
+}
+
+.copyModalDecisionFresh {
+  border-color: #dc2626; background: #fff5f5; color: #dc2626;
+}
+
+.copyModalIrsNote {
+  font-size: 10px; color: #1a7a4a; font-style: italic;
+  background: #f0faf5; border-radius: 4px; padding: 2px 6px;
+}
+
+.copyModalNewPlansSection {
+  border: 1px dashed #e5e3f0; border-radius: 10px; padding: 14px 16px;
+}
+
+.copyModalNewPlansLabel {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #aaa; margin-bottom: 10px;
+}
+
+.copyModalNewPlanRow {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid #f0eef8;
+}
+.copyModalNewPlanRow:last-child { border-bottom: none; padding-bottom: 0; }
+
+.copyModalNewBadge {
+  background: #e0f2fe; color: #0369a1; border-radius: 4px;
+  padding: 2px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+}
+
+.copyModalFooter {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px; border-top: 1px solid #e8e6f5; flex-shrink: 0;
+  background: #f8f7fc; border-radius: 0 0 14px 14px;
+}
+
+.copyModalFooterNote {
+  font-size: 12px; color: #666;
+}
+
+.copyModalFooterActions {
+  display: flex; gap: 10px;
+}
+
+.copyModalCancelBtn {
+  padding: 8px 18px; border-radius: 8px; border: 1.5px solid #c8c5e8;
+  background: #fff; color: #5651bd; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.copyModalCancelBtn:hover { background: #f0eef8; }
+
+.copyModalApplyBtn {
+  padding: 8px 20px; border-radius: 8px; border: none;
+  background: #5651bd; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.copyModalApplyBtn:hover { background: #443ea0; }
