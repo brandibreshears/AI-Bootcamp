@@ -1,0 +1,446 @@
+.page {
+  padding: 0 0 60px;
+  background: #EEEDF5;
+  min-height: 100%;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+}
+
+.breadcrumb {
+  background: #fff;
+  padding: 10px 32px;
+  border-bottom: 1px solid #D6D5DF;
+  font-size: 14px;
+  color: #4C4A64;
+}
+
+.breadcrumbLink {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #0076D7;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  padding: 0;
+}
+
+.breadcrumbLink:hover {
+  text-decoration: underline;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 28px 32px 0;
+}
+
+.backLink {
+  display: block;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #4C4A64;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.backLink:hover {
+  color: #2C26AC;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0;
+}
+
+.caseTag {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-top: 4px;
+}
+
+.caseLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4C4A64;
+}
+
+.caseValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #18162F;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #D6D5DF;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 20px 32px 0;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #EBEBF2;
+}
+
+/* Two column layout */
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+  margin: 0 32px;
+  padding-top: 20px;
+}
+
+.twoCol > .card {
+  margin: 0;
+}
+
+/* Info grid */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infoLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4C4A64;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: #18162F;
+}
+
+/* Accumulators */
+.accumGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 24px;
+}
+
+.accumBox {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.accumLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4C4A64;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.accumValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5651BD;
+}
+
+.accumValueNeutral {
+  font-size: 18px;
+  font-weight: 700;
+  color: #18162F;
+}
+
+.accumBar {
+  height: 6px;
+  background: #E5E5ED;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.accumBarFill {
+  height: 100%;
+  background: #5651BD;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.accumSub {
+  font-size: 11px;
+  color: #4C4A64;
+}
+
+/* Calculation breakdown */
+.calcToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: #18162F;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  padding: 0;
+  text-align: left;
+}
+
+.calcToggle:hover {
+  color: #2C26AC;
+}
+
+.calcChevron {
+  font-size: 18px;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.calcChevronOpen {
+  transform: rotate(180deg);
+}
+
+.calcBreakdown {
+  margin-top: 16px;
+  border: 1px solid #D6D5DF;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.calcStep {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #EBEBF2;
+  font-size: 14px;
+}
+
+.calcStep:last-child {
+  border-bottom: none;
+}
+
+.calcStepLabel {
+  color: #4C4A64;
+}
+
+.calcStepValue {
+  font-weight: 600;
+  color: #18162F;
+}
+
+.calcStepSub {
+  background: #F8F8FC;
+  padding-left: 28px;
+}
+
+.calcStepTotal {
+  border-top: 2px solid #5651BD !important;
+  background: #F0EFFA;
+}
+
+.calcStepTotal .calcStepLabel {
+  font-weight: 700;
+  color: #18162F;
+  font-size: 15px;
+}
+
+.calcStepTotal .calcStepValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1B7A3B;
+}
+
+/* Invoice amount card */
+.amountCard {
+  background: linear-gradient(135deg, #5651BD 0%, #2C26AC 100%);
+  border-color: transparent;
+  color: #fff;
+}
+
+.amountRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.amountLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.8);
+  margin: 0;
+}
+
+.amountSub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin: 4px 0 0;
+}
+
+.amountValue {
+  font-size: 42px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.amountMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+/* Actions card */
+.actionsCard {
+  background: #fff;
+  border: 1px solid #D6D5DF;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 20px 32px 0;
+}
+
+.actionsTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #EBEBF2;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+}
+
+/* Correction form */
+.correctionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.correctionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18162F;
+}
+
+.correctionHint {
+  font-size: 13px;
+  color: #4C4A64;
+  margin: 0;
+}
+
+.correctionTextarea {
+  border: 1.5px solid #D6D5DF;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  resize: vertical;
+  outline: none;
+}
+
+.correctionTextarea:focus {
+  border-color: #5651BD;
+}
+
+.correctionActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.cancelBtn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #4C4A64;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* Banners */
+.successBanner {
+  background: #E8F5E9;
+  border: 1px solid #4CAF50;
+  border-radius: 10px;
+  padding: 14px 28px;
+  margin: 20px 32px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1B7A3B;
+}
+
+.correctionBanner {
+  background: #FFF3E0;
+  border: 1px solid #FFA726;
+  border-radius: 10px;
+  padding: 14px 28px;
+  margin: 20px 32px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7A4000;
+}
+
+.correctionNotice {
+  background: #FDECEA;
+  border: 1.5px solid #D93025;
+  border-radius: 10px;
+  padding: 16px 24px;
+  margin: 20px 32px 0;
+}
+
+.correctionNoticeLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #D93025;
+  margin-bottom: 6px;
+}
+
+.correctionNoticeText {
+  font-size: 14px;
+  color: #18162F;
+  margin: 0;
+}
+
+.readOnlyCard {
+  background: #FFF8E6;
+  border: 1px solid #F5C242;
+  border-radius: 10px;
+  padding: 14px 24px;
+  margin: 20px 32px 0;
+  font-size: 14px;
+  color: #7A6000;
+}

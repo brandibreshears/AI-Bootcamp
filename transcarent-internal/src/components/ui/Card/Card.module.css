@@ -1,0 +1,10 @@
+.card {
+  background-color: var(--color-background-surface);
+  border-radius: var(--border-radius-l);
+  padding: var(--spacing-m);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.elevated {
+  box-shadow: var(--elevation-mid);
+}

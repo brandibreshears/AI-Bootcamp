@@ -1,0 +1,53 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-m);
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pageTitle {
+  font-size: var(--typography-heading3-fontSize);
+  font-weight: 700;
+}
+
+.filters {
+  display: flex;
+  gap: var(--spacing-m);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filterSearch {
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.filterSelect {
+  min-width: 140px;
+}
+
+.tableCard {
+  overflow-x: auto;
+}
+
+.memberName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.memberId {
+  font-size: var(--typography-bodySmall-fontSize);
+  color: var(--color-text-tertiary);
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-tertiary);
+}

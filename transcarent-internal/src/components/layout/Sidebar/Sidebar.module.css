@@ -1,0 +1,98 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 240px;
+  background-color: var(--color-background-neutral-900);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-m) var(--spacing-m);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+}
+
+.logoMark {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-background-action-primary-default);
+  color: var(--color-text-on-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: var(--fontSize-s);
+  font-family: 'Outfit', sans-serif;
+  flex-shrink: 0;
+}
+
+.logoText {
+  color: var(--color-text-on-color);
+  font-size: var(--fontSize-l);
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+}
+
+.nav {
+  flex: 1;
+  padding: var(--spacing-s) var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-m);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: var(--border-radius-m);
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--typography-body-fontSize);
+  font-weight: 500;
+  transition: background-color var(--motion-duration-fast), color var(--motion-duration-fast);
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+}
+
+.navItemActive {
+  background-color: var(--color-background-primary-700);
+  color: var(--color-text-on-color);
+}
+
+.navItemActive:hover {
+  background-color: var(--color-background-primary-700);
+  color: var(--color-text-on-color);
+}
+
+.navIcon {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.navItemActive .navIcon {
+  opacity: 1;
+}
+
+.footer {
+  padding: var(--spacing-s) var(--spacing-m);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: var(--typography-caption-fontSize);
+  font-family: 'Outfit', sans-serif;
+}
