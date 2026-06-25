@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './GenerateInvoice.module.css';
 import { Button } from '../../components/ui/Button/Button';
 import { InfoIcon, CheckIcon } from '../../components/ui/Icons';
+import { COST_SHARE_TYPE_LABELS } from '../../utils/invoiceStatus';
 
 const STEPS = [
   'Select member',
@@ -161,6 +162,7 @@ export default function GenerateInvoice() {
   // Free visits (Fixed Cost / Traditional)
   const [initialFreeVisits, setInitialFreeVisits] = useState('');
 
+  const [submitting, setSubmitting] = useState(false);
   const [bypassExpanded, setBypassExpanded] = useState(false);
   const [manualOverride, setManualOverride] = useState(false);
   const [manualAmount, setManualAmount] = useState('');
@@ -269,9 +271,12 @@ export default function GenerateInvoice() {
     if (step > minStep) setStep(step - 1);
   }
 
-  function handleSubmit() {
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setSubmitting(false);
     navigate('/billing');
-  }
+  };
 
   const encounterLabel = ENCOUNTER_OPTIONS.find(o => o.value === encounter)?.label ?? encounter;
 
@@ -1316,6 +1321,18 @@ export default function GenerateInvoice() {
           </div>
         )}
 
+        {/* ── Processing banner ── */}
+        {submitting && (
+          <div style={{ background: '#E8F4FD', border: '1.5px solid #1565C0', borderRadius: '10px', padding: '14px 24px', marginBottom: '16px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#1565C0', marginBottom: '6px' }}>
+              Processing
+            </div>
+            <p style={{ fontSize: '14px', color: '#18162F', margin: 0 }}>
+              Submitting invoice… Payment confirmation is received via Stripe webhook. This may take a moment.
+            </p>
+          </div>
+        )}
+
         {/* ── Review & submit (last step) ── */}
         {((invoiceType === 'recoupment' && step === 3) || (invoiceType === 'cost_share' && step === 4) || (invoiceType === '' && step === 4)) && (
           <div className={styles.stepContent}>
@@ -1355,7 +1372,7 @@ export default function GenerateInvoice() {
                 <div className={styles.reviewList}>
                   {invoiceType === 'cost_share' && costShareType && (
                     <>
-                      <div className={styles.reviewItem}><span className={styles.reviewKey}>Cost share type</span><span className={`${styles.reviewVal} ${styles.reviewBadge}`}>{availableTypes.find(t => t.value === costShareType)?.label ?? costShareType}</span></div>
+                      <div className={styles.reviewItem}><span className={styles.reviewKey}>Cost share type</span><span className={`${styles.reviewVal} ${styles.reviewBadge}`}>{COST_SHARE_TYPE_LABELS[costShareType] ?? availableTypes.find(t => t.value === costShareType)?.label ?? costShareType}</span></div>
                       {costShareType !== 'waived' && costShareType !== 'fixed_cost' && (
                         <>
                           <div className={styles.reviewItem}><span className={styles.reviewKey}>Deductible met</span><span className={styles.reviewVal}>${deductibleMet.toLocaleString()} / ${deductibleMax.toLocaleString()}</span></div>
@@ -1443,8 +1460,12 @@ export default function GenerateInvoice() {
                 Continue
               </Button>
             ) : (
-              <Button appearance="primary" onClick={handleSubmit}>
-                Submit for approval
+              <Button
+                appearance="primary"
+                onClick={handleSubmit}
+                disabled={submitting}
+              >
+                {submitting ? 'Processing payment…' : isCorrection ? 'Resubmit invoice' : 'Submit invoice'}
               </Button>
             )}
           </div>

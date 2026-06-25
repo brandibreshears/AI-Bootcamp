@@ -4,6 +4,7 @@ import styles from './Billing.module.css';
 import { Badge } from '../../components/ui/Badge/Badge';
 import { Button } from '../../components/ui/Button/Button';
 import { SearchIcon } from '../../components/ui/Icons';
+import { COST_SHARE_TYPE_LABELS, ENCOUNTER_SOURCE_LABELS, ADMIN_STATE_LABELS } from '../../utils/invoiceStatus';
 
 export type InvoiceStatus =
   | 'invoice_draft'
@@ -46,6 +47,9 @@ export interface Invoice {
   coinsurancePct?: number;
   copay?: number;
   billingType?: string;
+  servicePaymentsState?: 'pre_authorized' | 'pre_unbillable' | 'encounter_closed' | 'payment_captured' | 'no_payment_needed' | 'ingested';
+  unbillableReason?: string;
+  encounterSource?: string;
 }
 
 export const mockInvoices: Invoice[] = [
@@ -75,6 +79,7 @@ export const mockInvoices: Invoice[] = [
     coinsurancePct: 20,
     copay: 250,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
   },
   {
     id: '2',
@@ -93,6 +98,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1990-07-22',
     innDedAmount: 800,
     innOopAmount: 2500,
+    servicePaymentsState: 'pre_authorized',
   },
   {
     id: '3',
@@ -121,6 +127,7 @@ export const mockInvoices: Invoice[] = [
     oopMax: 6000,
     coinsurancePct: 20,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
   },
   // Paid — UHC not reported (4 records for bulk demo)
   {
@@ -142,6 +149,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1992-03-17',
     innDedAmount: 1500,
     innOopAmount: 3000,
+    servicePaymentsState: 'payment_captured',
   },
   {
     id: '11',
@@ -162,6 +170,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1988-07-04',
     innDedAmount: 1500,
     innOopAmount: 3000,
+    servicePaymentsState: 'payment_captured',
   },
   {
     id: '12',
@@ -182,6 +191,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1979-11-19',
     innDedAmount: 1500,
     innOopAmount: 3000,
+    servicePaymentsState: 'payment_captured',
   },
   {
     id: '13',
@@ -202,6 +212,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1994-05-30',
     innDedAmount: 1500,
     innOopAmount: 3000,
+    servicePaymentsState: 'payment_captured',
   },
   // Paid — UHC manually reported
   {
@@ -223,6 +234,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1995-12-01',
     innDedAmount: 1000,
     innOopAmount: 2500,
+    servicePaymentsState: 'payment_captured',
   },
   // Paid — Aetna not reported (2 records)
   {
@@ -244,6 +256,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1971-06-14',
     innDedAmount: 3000,
     innOopAmount: 7500,
+    servicePaymentsState: 'payment_captured',
   },
   {
     id: '14',
@@ -264,6 +277,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1983-02-08',
     innDedAmount: 2000,
     innOopAmount: 5000,
+    servicePaymentsState: 'payment_captured',
   },
   // Paid — BCBS automated file report (system-set, locked)
   {
@@ -285,6 +299,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1990-09-15',
     innDedAmount: 1200,
     innOopAmount: 3500,
+    servicePaymentsState: 'payment_captured',
   },
   // Active
   {
@@ -305,6 +320,7 @@ export const mockInvoices: Invoice[] = [
     memberDob: '1980-08-30',
     innDedAmount: 2000,
     innOopAmount: 5000,
+    servicePaymentsState: 'encounter_closed',
   },
   // Drafts
   {
@@ -320,6 +336,7 @@ export const mockInvoices: Invoice[] = [
     caseRate: 500,
     invoiceAmount: 500,
     status: 'invoice_draft',
+    servicePaymentsState: 'pre_authorized',
   },
   // Surgery – Not issued
   {
@@ -345,6 +362,7 @@ export const mockInvoices: Invoice[] = [
     oopMax: 3000,
     coinsurancePct: 20,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
   },
   {
     id: '10',
@@ -369,6 +387,7 @@ export const mockInvoices: Invoice[] = [
     oopMax: 5000,
     coinsurancePct: 20,
     billingType: 'IRS Minimum',
+    servicePaymentsState: 'pre_authorized',
   },
 ];
 
@@ -905,7 +924,7 @@ function ApprovalDrawer({ invoice, isBillingManager, onClose, onApprove, onCorre
             </div>
             <div className={styles.drawerInfoRow}>
               <span className={styles.drawerInfoLabel}>Billing type</span>
-              <span className={styles.drawerInfoValue}>{invoice.billingType ?? '—'}</span>
+              <span className={styles.drawerInfoValue}>{invoice.billingType ? (COST_SHARE_TYPE_LABELS[invoice.billingType] ?? invoice.billingType) : '—'}</span>
             </div>
             <div className={styles.drawerInfoRow}>
               <span className={styles.drawerInfoLabel}>Invoice type</span>
@@ -1418,6 +1437,9 @@ export default function Billing() {
                   <td className={styles.td}>
                     <div>{inv.encounterType}</div>
                     <div className={styles.memberClient}>{inv.invoiceType === 'cost_share' ? 'Cost share' : 'Recoupment'}</div>
+                    {inv.encounterSource && (
+                      <div className={styles.memberClient}>{ENCOUNTER_SOURCE_LABELS[inv.encounterSource] ?? inv.encounterSource}</div>
+                    )}
                   </td>
                   <td className={styles.td}>{inv.caseNumber}</td>
                   <td className={styles.td}>{formatDate(inv.encounterDate)}</td>
