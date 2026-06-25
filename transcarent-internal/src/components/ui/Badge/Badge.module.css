@@ -38,3 +38,60 @@
   background-color: #E8E8EE;
   color: #4C4A64;
 }
+
+.noCost {
+  background: #E8F4FD;
+  color: #1565C0;
+}
+
+.disabled {
+  background: #E8E8EE;
+  color: #4C4A64;
+  opacity: 0.6;
+}
+
+.discarded {
+  background: #E8E8EE;
+  color: #4C4A64;
+  text-decoration: line-through;
+}
+
+.waived {
+  background: #EAF3DE;
+  color: #2E7D32;
+}
+
+.included {
+  background: #EAF3DE;
+  color: #2E7D32;
+}
+
+.refundRequested {
+  background: #FFF3CD;
+  color: #7A4F00;
+}
+
+.refundFailed {
+  background: #FADADD;
+  color: #B71C1C;
+}
+
+.refundApproved {
+  background: #EAF3DE;
+  color: #2E7D32;
+}
+
+.refundPending {
+  background: #FFF3CD;
+  color: #7A4F00;
+}
+
+.refundIssued {
+  background: #E8F4FD;
+  color: #1565C0;
+}
+
+.refundDeclined {
+  background: #FADADD;
+  color: #B71C1C;
+}

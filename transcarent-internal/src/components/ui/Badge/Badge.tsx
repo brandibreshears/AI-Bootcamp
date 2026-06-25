@@ -2,7 +2,23 @@ import React from 'react';
 import styles from './Badge.module.css';
 
 interface BadgeProps {
-  variant: 'success' | 'error' | 'warning' | 'info' | 'neutral';
+  variant:
+    | 'success'
+    | 'error'
+    | 'warning'
+    | 'info'
+    | 'neutral'
+    | 'noCost'
+    | 'disabled'
+    | 'discarded'
+    | 'waived'
+    | 'included'
+    | 'refundRequested'
+    | 'refundFailed'
+    | 'refundApproved'
+    | 'refundPending'
+    | 'refundIssued'
+    | 'refundDeclined';
   children: React.ReactNode;
 }
 
