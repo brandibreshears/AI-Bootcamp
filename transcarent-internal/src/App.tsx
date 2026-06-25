@@ -11,6 +11,7 @@ import Billing from './pages/Billing/Billing';
 import GenerateInvoice from './pages/Billing/GenerateInvoice';
 import ApprovalQueue from './pages/Billing/ApprovalQueue';
 import InvoiceApprovalDetail from './pages/Billing/InvoiceApprovalDetail';
+import SurgeryCostShare from './pages/Client/SurgeryCostShare/SurgeryCostShare';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="billing/approvals" element={<ApprovalQueue />} />
           <Route path="billing/approvals/:id" element={<InvoiceApprovalDetail />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="client/cost-share/surgery" element={<SurgeryCostShare />} />
         </Route>
       </Routes>
     </BrowserRouter>
