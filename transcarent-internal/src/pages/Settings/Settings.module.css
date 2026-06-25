@@ -1,0 +1,127 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-l);
+  max-width: 640px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-m);
+}
+
+.sectionTitle {
+  font-size: var(--typography-heading4-fontSize);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+}
+
+.fieldLabel {
+  font-size: var(--typography-label-fontSize);
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: var(--typography-bodySmall-fontSize);
+}
+
+.fieldValue {
+  font-size: var(--typography-body-fontSize);
+  color: var(--color-text-primary);
+  font-weight: 500;
+  padding: var(--spacing-xs) var(--spacing-s);
+  background-color: var(--color-background-neutral-100);
+  border-radius: var(--border-radius-m);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.toggleRow:last-of-type {
+  border-bottom: none;
+}
+
+.toggleLabel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+}
+
+.toggleTitle {
+  font-size: var(--typography-body-fontSize);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.toggleDesc {
+  font-size: var(--typography-bodySmall-fontSize);
+  color: var(--color-text-tertiary);
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggleSlider {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-background-neutral-300);
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-normal);
+}
+
+.toggleSlider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform var(--motion-duration-normal);
+}
+
+.toggle input:checked + .toggleSlider {
+  background-color: var(--color-background-action-primary-default);
+}
+
+.toggle input:checked + .toggleSlider::before {
+  transform: translateX(20px);
+}
+
+.toggle input:focus-visible + .toggleSlider {
+  outline: 2px solid var(--color-border-focus-primary);
+  outline-offset: 2px;
+}
+
+.saveBtn {
+  align-self: flex-start;
+}

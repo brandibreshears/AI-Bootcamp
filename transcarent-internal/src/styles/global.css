@@ -1,0 +1,15 @@
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
+  font-size: var(--typography-body-fontSize);
+  line-height: var(--typography-body-lineHeight);
+}
+a { color: var(--color-text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1,h2,h3,h4,h5,h6 { font-family: 'Outfit', sans-serif; margin: 0; font-weight: 700; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: var(--spacing-xs) var(--spacing-s); border-bottom: 1px solid var(--color-border-subtle); }
+th { font-weight: 500; color: var(--color-text-tertiary); font-size: var(--typography-bodySmall-fontSize); text-transform: uppercase; letter-spacing: 0.5px; }

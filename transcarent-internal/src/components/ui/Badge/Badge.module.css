@@ -1,0 +1,40 @@
+.badge {
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  white-space: normal;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Solid fill — white text */
+.success {
+  background-color: #2E7D32;
+  color: #fff;
+}
+
+.info {
+  background-color: #1565C0;
+  color: #fff;
+}
+
+/* Soft tint — colored text */
+.warning {
+  background-color: #FFF3CD;
+  color: #7A4F00;
+}
+
+.error {
+  background-color: #FADADD;
+  color: #B71C1C;
+}
+
+.neutral {
+  background-color: #E8E8EE;
+  color: #4C4A64;
+}

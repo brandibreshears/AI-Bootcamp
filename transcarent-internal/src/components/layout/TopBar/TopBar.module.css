@@ -1,0 +1,85 @@
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
+  height: 64px;
+  background-color: var(--color-background-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-l);
+  z-index: 99;
+}
+
+.title {
+  font-size: var(--typography-heading4-fontSize);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--spacing-xs);
+  color: var(--color-icon-tertiary);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--border-radius-full);
+  padding: var(--spacing-2xs) var(--spacing-s) var(--spacing-2xs) calc(var(--spacing-s) + 20px + var(--spacing-3xs));
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--typography-bodySmall-fontSize);
+  color: var(--color-text-primary);
+  background-color: var(--color-background-page);
+  outline: none;
+  width: 200px;
+  transition: border-color var(--motion-duration-normal), width var(--motion-duration-slow);
+}
+
+.searchInput:focus {
+  border-color: var(--color-border-input-interactive);
+  width: 260px;
+  outline: 2px solid var(--color-border-focus-primary);
+  outline-offset: 0;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-icon-tertiary);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-full);
+  transition: background-color var(--motion-duration-fast);
+}
+
+.iconButton:hover {
+  background-color: var(--color-background-neutral-100);
+  color: var(--color-icon-primary);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--color-border-focus-primary);
+  outline-offset: 2px;
+}

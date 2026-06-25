@@ -1,0 +1,88 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-l);
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-m);
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statLabel {
+  font-size: var(--typography-bodySmall-fontSize);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.statIcon {
+  color: var(--color-icon-secondary);
+  opacity: 0.6;
+}
+
+.statValue {
+  font-size: var(--typography-heading2-fontSize);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.statSubtext {
+  font-size: var(--typography-bodySmall-fontSize);
+  color: var(--color-text-tertiary);
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--spacing-m);
+}
+
+.sectionTitle {
+  font-size: var(--typography-heading5-fontSize);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-m);
+}
+
+.memberName {
+  font-weight: 600;
+}
+
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.quickActionsTitle {
+  font-size: var(--typography-heading5-fontSize);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.quickActionBtn {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+  .twoCol { grid-template-columns: 1fr; }
+}

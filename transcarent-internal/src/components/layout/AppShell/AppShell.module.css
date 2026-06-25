@@ -1,0 +1,7 @@
+.main {
+  margin-left: 240px;
+  margin-top: 64px;
+  padding: var(--spacing-l);
+  min-height: calc(100vh - 64px);
+  background-color: var(--color-background-page);
+}

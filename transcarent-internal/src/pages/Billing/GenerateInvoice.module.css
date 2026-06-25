@@ -1,0 +1,1341 @@
+.page {
+  padding: 32px;
+  background: #eeedf5;
+  min-height: 100%;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  max-width: 100%;
+}
+
+.pageWide {
+  padding: 32px;
+  background: #eeedf5;
+  min-height: 100%;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  max-width: 100%;
+}
+
+/* Wide card for step 0 split layout */
+.cardWide {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #D6D5DF;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+/* Split layout — step 0 */
+.splitLayout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 520px;
+}
+
+.searchPanel {
+  padding: 24px 20px;
+  border-right: 1px solid #D6D5DF;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #fff;
+}
+
+.resultsPanel {
+  padding: 24px;
+  background: #fff;
+  overflow-y: auto;
+}
+
+.resultsEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: #4C4A64;
+  font-size: 14px;
+  text-align: center;
+}
+
+.resultsHeader {
+  margin-bottom: 12px;
+}
+
+.resultsCount {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4C4A64;
+}
+
+.memberNameCell {
+  font-weight: 600;
+  font-size: 14px;
+  color: #18162F;
+}
+
+.memberUuidCell {
+  font-size: 11px;
+  color: #9290A3;
+  margin-top: 2px;
+  font-family: monospace;
+}
+
+.iconYes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #EBFAEF;
+  color: #2B7E4D;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.iconNo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #F4D9D9;
+  color: #CA4343;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.buildInvoiceLink {
+  background: none;
+  border: none;
+  color: #0076D7;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.buildInvoiceLink:hover {
+  text-decoration: underline;
+}
+
+/* Advanced search toggle */
+.advancedToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #18162F;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-top: 4px;
+}
+
+.advancedChevron {
+  font-size: 11px;
+  color: #4C4A64;
+  margin-left: 6px;
+}
+
+/* Bottom bar — step indicator + nav */
+.bottomBar {
+  background: #fff;
+  border: 1px solid #D6D5DF;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-top: 12px;
+}
+
+.stepBarRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #EAE9F7;
+}
+
+.stepBarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepBarCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepBarLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4C4A64;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #5651BD;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 10px;
+  display: inline-block;
+  font-family: 'Outfit', sans-serif;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.pageTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 8px 0 0;
+}
+
+/* Progress bar */
+.progressBar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.stepDone {
+  background: #5651BD;
+  color: #fff;
+}
+
+.stepActive {
+  background: #2C26AC;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(86, 81, 189, 0.2);
+}
+
+.stepFuture {
+  background: #E5E5ED;
+  color: #4C4A64;
+}
+
+.stepLabel {
+  font-size: 11px;
+  color: #4C4A64;
+  text-align: center;
+  max-width: 72px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepLabelActive {
+  color: #2C26AC;
+  font-weight: 700;
+}
+
+.stepConnector {
+  flex: 1;
+  height: 2px;
+  background: #E5E5ED;
+  margin: 0 4px;
+  margin-bottom: 22px;
+  min-width: 20px;
+}
+
+.stepConnectorDone {
+  background: #5651BD;
+}
+
+.checkIcon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #D6D5DF;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Cost share period pill */
+.csPeriodPill {
+  border: 1.5px solid #D6D5DF;
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: #fff;
+  transition: border-color 0.15s;
+  user-select: none;
+}
+.csPeriodPill:hover {
+  border-color: #5651BD;
+}
+.csPeriodPillInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.csPeriodLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #5651BD;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 2px;
+}
+.csPeriodValue {
+  font-size: 15px;
+  font-weight: 600;
+  color: #18162F;
+  margin: 0;
+}
+.csPeriodChevron {
+  font-size: 18px;
+  color: #4C4A64;
+  transition: transform 0.2s;
+  line-height: 1;
+}
+.csPeriodChevronOpen {
+  transform: rotate(180deg);
+}
+.csPeriodEdit {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #E5E5ED;
+}
+
+.stepTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0;
+}
+
+.stepSubtitle {
+  font-size: 14px;
+  color: #4C4A64;
+  margin: -12px 0 0;
+}
+
+/* Member search */
+.searchWrapper {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4C4A64;
+  width: 18px;
+  height: 18px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  border-color: #5651BD;
+}
+
+.memberResults {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.memberRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+  width: 100%;
+  font-family: 'Outfit', sans-serif;
+}
+
+.memberRow:hover {
+  border-color: #5651BD;
+  background: #F8F8FF;
+}
+
+.memberRowSelected {
+  border-color: #2C26AC;
+  background: #F0EFFD;
+}
+
+.memberRowName {
+  font-weight: 600;
+  font-size: 15px;
+  color: #18162F;
+}
+
+.memberRowMeta {
+  font-size: 13px;
+  color: #4C4A64;
+  margin-top: 2px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dot {
+  color: #9997B0;
+}
+
+.selectedBadge {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #2C26AC;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* Radio cards */
+.radioCards {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.radioCard {
+  flex: 1;
+  min-width: 200px;
+  padding: 16px;
+  border: 2px solid #D6D5DF;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-family: 'Outfit', sans-serif;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.radioCard:hover {
+  border-color: #5651BD;
+  background: #F8F8FF;
+}
+
+.radioCardSelected {
+  border-color: #2C26AC;
+  background: #F0EFFD;
+}
+
+.radioIndicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #D6D5DF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.radioCardSelected .radioIndicator {
+  border-color: #2C26AC;
+}
+
+.radioInner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.radioInnerSelected {
+  background: #2C26AC;
+}
+
+.radioCardTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #18162F;
+  margin-bottom: 4px;
+}
+
+.radioCardDesc {
+  font-size: 13px;
+  color: #4C4A64;
+}
+
+/* Form elements */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4C4A64;
+}
+
+.required {
+  color: #D93025;
+}
+
+.formInput {
+  padding: 10px 12px;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  background: #fff;
+  outline: none;
+}
+
+.formInput:focus {
+  border-color: #5651BD;
+}
+
+.formInputReadOnly {
+  background: #F8F8FF;
+  color: #4C4A64;
+}
+
+.formSelect {
+  padding: 10px 12px;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  background: #fff;
+  outline: none;
+  appearance: auto;
+}
+
+.formSelect:focus {
+  border-color: #5651BD;
+}
+
+.formTextarea {
+  padding: 10px 12px;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  background: #fff;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formTextarea:focus {
+  border-color: #5651BD;
+}
+
+/* Info banner */
+.infoBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #EEF2FF;
+  border: 1px solid #C7C3F5;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #2C26AC;
+}
+
+.infoBannerIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #5651BD;
+}
+
+/* Accumulator */
+.accumGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.accumCard {
+  padding: 14px 16px;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  background: #F8F8FF;
+}
+
+.accumLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4C4A64;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.accumValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #18162F;
+}
+
+.accumOf {
+  font-size: 14px;
+  font-weight: 400;
+  color: #4C4A64;
+}
+
+.accumBar {
+  height: 4px;
+  background: #E5E5ED;
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.accumFill {
+  height: 100%;
+  background: #5651BD;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.costShareResult {
+  background: linear-gradient(135deg, #F0EFFD 0%, #E8F5E9 100%);
+  border: 1px solid #C7C3F5;
+  border-radius: 10px;
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.costShareResultLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4C4A64;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.costShareResultAmount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1B7A3B;
+  margin-bottom: 4px;
+}
+
+.costShareResultFormula {
+  font-size: 12px;
+  color: #4C4A64;
+}
+
+/* Calculation breakdown */
+.calcBreakdown {
+  background: #F8F8FC;
+  border: 1px solid #D6D5DF;
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+
+.calcBreakdownTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4C4A64;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+.calcSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calcStep {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  color: #18162F;
+  padding: 4px 0;
+  border-bottom: 1px solid #EBEBF2;
+}
+
+.calcStep:last-child {
+  border-bottom: none;
+}
+
+.calcStepLabel {
+  color: #4C4A64;
+  flex: 1;
+  padding-right: 16px;
+}
+
+.calcStepValue {
+  font-weight: 600;
+  color: #18162F;
+  white-space: nowrap;
+}
+
+.calcStepSub {
+  background: #EEEDF5;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 2px 0;
+  border-bottom: none !important;
+}
+
+.calcStepSub .calcStepLabel {
+  color: #18162F;
+  font-weight: 600;
+}
+
+.calcStepTotal {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid #5651BD !important;
+  border-bottom: none !important;
+}
+
+.calcStepTotal .calcStepLabel {
+  font-size: 15px;
+  font-weight: 700;
+  color: #18162F;
+}
+
+.calcStepTotal .calcStepValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1B7A3B;
+}
+
+/* Toggle */
+.overrideRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #18162F;
+  font-weight: 500;
+  user-select: none;
+}
+
+.toggle {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: #D6D5DF;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggleOn {
+  background: #5651BD;
+}
+
+.toggleThumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.toggleOn .toggleThumb {
+  left: 21px;
+}
+
+/* Summary */
+.summaryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid #D6D5DF;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.summaryRow {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid #D6D5DF;
+  font-size: 14px;
+}
+
+.summaryRow:last-child {
+  border-bottom: none;
+}
+
+.summaryKey {
+  width: 180px;
+  font-weight: 600;
+  color: #4C4A64;
+  flex-shrink: 0;
+}
+
+.summaryValue {
+  color: #18162F;
+  flex: 1;
+}
+
+.amountHighlight {
+  background: linear-gradient(135deg, #5651BD, #2C26AC);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+}
+
+.amountHighlightLabel {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+.amountHighlightValue {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+/* Search form */
+.searchForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.searchActions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.searchNote {
+  font-size: 12px;
+  color: #4C4A64;
+  margin-top: 8px;
+}
+
+/* Results table */
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.resultsTable th {
+  background: #F8F8FF;
+  padding: 10px 12px;
+  font-weight: 500;
+  border-bottom: 1px solid #D6D5DF;
+  text-align: left;
+}
+
+.resultsTable td {
+  padding: 10px 12px;
+  border-bottom: 0.5px solid #EAE9F7;
+}
+
+.selectedRow {
+  background: #EAE9F7;
+}
+
+.appYes {
+  background: #EBFAEF;
+  color: #2B7E4D;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.appNo {
+  background: #E5E5ED;
+  color: #4C4A64;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+/* Wizard nav */
+.wizardNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wizardNavRight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submitRow {
+  display: flex;
+  gap: 12px;
+}
+
+.wizardNavRight {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Field sections (grouped sub-areas within a step) */
+.fieldSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #F8F8FF;
+  border: 1px solid #E5E5ED;
+  border-radius: 8px;
+}
+
+.fieldSectionLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0;
+}
+
+.optional {
+  font-weight: 400;
+  color: #4C4A64;
+  font-size: 12px;
+}
+
+.fieldHint {
+  font-size: 12px;
+  color: #4C4A64;
+  margin: 0;
+}
+
+/* EOB toggle row */
+.eobToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Summary section headers */
+.summarySection {
+  padding: 8px 16px;
+  background: #F8F8FF;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4C4A64;
+  border-bottom: 1px solid #D6D5DF;
+}
+
+.amountHighlightNote {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+
+.recalcLink {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 6px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.recalcLink:hover {
+  color: #fff;
+}
+
+.recalcRow {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.bypassToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: #F8F8FF;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4C4A64;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.bypassToggle:hover {
+  background: #EAE9F7;
+  border-color: #5651BD;
+  color: #2C26AC;
+}
+
+.bypassToggleChevron {
+  font-size: 11px;
+  color: #4C4A64;
+}
+
+/* Cost share type cards — 2-col grid of radio cards */
+.costShareTypeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.typeCard {
+  flex: unset;
+  min-width: unset;
+  padding: 14px;
+  border: 2px solid #D6D5DF;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-family: 'Outfit', sans-serif;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.typeCard:hover { border-color: #5651BD; background: #F8F8FF; }
+
+.typeCardSelected { border-color: #2C26AC; background: #F0EFFD; }
+
+.configBadge {
+  display: inline-block;
+  background: #EBFAEF;
+  color: #2B7E4D;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  margin-left: 8px;
+  letter-spacing: 0.03em;
+  text-transform: none;
+}
+
+.waivedBanner {
+  padding: 14px 16px;
+  background: #EBFAEF;
+  border: 1px solid #A3D9B1;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2B7E4D;
+  font-weight: 500;
+}
+
+.accumSubhead {
+  font-size: 16px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0;
+}
+
+/* Two-column review layout */
+.reviewColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.reviewCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reviewColHead {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4C4A64;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #D6D5DF;
+}
+
+.reviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.reviewItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid #EAE9F7;
+  gap: 8px;
+}
+
+.reviewItem:last-child { border-bottom: none; }
+
+.reviewKey {
+  color: #4C4A64;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.reviewVal {
+  color: #18162F;
+  text-align: right;
+}
+
+.reviewBadge {
+  background: #EAE9F7;
+  color: #2C26AC;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reviewDivider {
+  height: 1px;
+  background: #D6D5DF;
+}
+
+.invoiceAmountBox {
+  background: linear-gradient(135deg, #5651BD, #2C26AC);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.invoiceAmountLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.invoiceAmountValue {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.invoiceAmountNote {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.billingTypeSelect {
+  padding: 14px 16px;
+  border: 1.5px solid #D6D5DF;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  background: #fff;
+  outline: none;
+  appearance: auto;
+  width: 100%;
+}
+
+.billingTypeSelect:focus {
+  border-color: #5651BD;
+}
+
+.csStatusList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.csStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #18162F;
+}
+
+.csStatusIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.csStatusGreen {
+  background: #EBFAEF;
+  color: #2B7E4D;
+}
+
+.csStatusRed {
+  background: #F4D9D9;
+  color: #CA4343;
+}
+
+.csStatusCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #18162F;
+  cursor: pointer;
+}
+
+.inputWithPrefix {
+  display: flex;
+  align-items: center;
+  border: 1px solid #D6D5DF;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.inputWithPrefix:focus-within {
+  border-color: #5651BD;
+}
+
+.inputPrefix {
+  padding: 10px 10px 10px 12px;
+  font-size: 14px;
+  color: #4C4A64;
+  font-family: 'Outfit', sans-serif;
+  background: #F8F8FF;
+  border-right: 1px solid #D6D5DF;
+  user-select: none;
+}
+
+.inputWithPrefix input {
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #18162F;
+  flex: 1;
+  background: transparent;
+}
