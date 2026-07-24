@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Settings.module.css';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
@@ -10,8 +11,15 @@ interface Preferences {
   weeklySummary: boolean;
 }
 
+interface BillingPreferences {
+  autoGenerateInvoices: boolean;
+  eftAutoWithdraw: boolean;
+  pastDueNotifications: boolean;
+}
+
 export default function Settings() {
   const { toasts, addToast, removeToast } = useToast();
+  const navigate = useNavigate();
 
   const [prefs, setPrefs] = useState<Preferences>({
     emailNotifications: true,
@@ -19,8 +27,18 @@ export default function Settings() {
     weeklySummary: true,
   });
 
+  const [billingPrefs, setBillingPrefs] = useState<BillingPreferences>({
+    autoGenerateInvoices: true,
+    eftAutoWithdraw: false,
+    pastDueNotifications: true,
+  });
+
   const toggle = (key: keyof Preferences) => {
     setPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const toggleBilling = (key: keyof BillingPreferences) => {
+    setBillingPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleSaveProfile = () => {
@@ -29,6 +47,10 @@ export default function Settings() {
 
   const handleSavePreferences = () => {
     addToast('success', 'Notification preferences updated.');
+  };
+
+  const handleSaveBillingPrefs = () => {
+    addToast('success', 'Billing settings saved.');
   };
 
   return (
@@ -117,6 +139,78 @@ export default function Settings() {
           >
             Save Preferences
           </Button>
+        </section>
+      </Card>
+
+      <Card elevated>
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Billing Settings</h2>
+          <p className={styles.sectionDesc}>
+            Configure automation behavior for client invoice generation, EFT withdrawals, and finance team alerts.
+          </p>
+
+          <div className={styles.toggleRow}>
+            <div className={styles.toggleLabel}>
+              <span className={styles.toggleTitle}>Auto-Generate Invoices</span>
+              <span className={styles.toggleDesc}>
+                Automatically generate client invoices at the end of each billing cycle using utilization data
+              </span>
+            </div>
+            <label className={styles.toggle}>
+              <input
+                type="checkbox"
+                checked={billingPrefs.autoGenerateInvoices}
+                onChange={() => toggleBilling('autoGenerateInvoices')}
+                aria-label="Auto-Generate Invoices"
+              />
+              <span className={styles.toggleSlider} />
+            </label>
+          </div>
+
+          <div className={styles.toggleRow}>
+            <div className={styles.toggleLabel}>
+              <span className={styles.toggleTitle}>EFT Auto-Withdraw</span>
+              <span className={styles.toggleDesc}>
+                Automatically initiate EFT withdrawal on the due date for clients with banking info on file
+              </span>
+            </div>
+            <label className={styles.toggle}>
+              <input
+                type="checkbox"
+                checked={billingPrefs.eftAutoWithdraw}
+                onChange={() => toggleBilling('eftAutoWithdraw')}
+                aria-label="EFT Auto-Withdraw"
+              />
+              <span className={styles.toggleSlider} />
+            </label>
+          </div>
+
+          <div className={styles.toggleRow}>
+            <div className={styles.toggleLabel}>
+              <span className={styles.toggleTitle}>Past-Due Notifications</span>
+              <span className={styles.toggleDesc}>
+                Notify the Finance team when a client invoice becomes past due
+              </span>
+            </div>
+            <label className={styles.toggle}>
+              <input
+                type="checkbox"
+                checked={billingPrefs.pastDueNotifications}
+                onChange={() => toggleBilling('pastDueNotifications')}
+                aria-label="Past-Due Notifications"
+              />
+              <span className={styles.toggleSlider} />
+            </label>
+          </div>
+
+          <div className={styles.billingActions}>
+            <Button appearance="secondary" onClick={() => navigate('/billing/client-invoicing')}>
+              Open Client Invoicing Dashboard →
+            </Button>
+            <Button appearance="primary" className={styles.saveBtn} onClick={handleSaveBillingPrefs}>
+              Save Billing Settings
+            </Button>
+          </div>
         </section>
       </Card>
 

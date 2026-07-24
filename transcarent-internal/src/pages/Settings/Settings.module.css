@@ -125,3 +125,16 @@
 .saveBtn {
   align-self: flex-start;
 }
+
+.sectionDesc {
+  font-size: var(--typography-bodySmall-fontSize);
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.billingActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  padding-top: var(--spacing-xs);
+}
