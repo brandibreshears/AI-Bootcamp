@@ -1,0 +1,541 @@
+.page {
+  padding: 32px 40px 120px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: #5651BD;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0 0 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.headerMeta {
+  display: flex;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.metaStat {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.metaValue {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  color: #18162F;
+  line-height: 1;
+}
+
+.metaLabel {
+  display: block;
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+/* Timeline banner */
+.timelineBanner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #F8F7FF;
+  border: 1px solid #E0DEFB;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+}
+
+.timelineStep {
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+}
+
+.timelineNum {
+  font-size: 13px;
+  font-weight: 700;
+  color: #5651BD;
+  margin-bottom: 4px;
+}
+
+.timelineLabel {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.3;
+}
+
+.timelineArrow {
+  color: #C5C1F5;
+  font-size: 18px;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+/* Tabs */
+.tabBar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #E5E7EB;
+  margin-bottom: 24px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.15s;
+}
+
+.tab:hover { color: #18162F; }
+
+.tabActive {
+  color: #5651BD;
+  border-bottom-color: #5651BD;
+}
+
+.tabBadge {
+  background: #E5E7EB;
+  color: #374151;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tabBadgeAlert {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Filter bar */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.filterInput {
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 280px;
+  outline: none;
+  color: #18162F;
+}
+
+.filterInput:focus { border-color: #5651BD; }
+
+.filterClear {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Case table */
+.caseTableHeader {
+  display: grid;
+  grid-template-columns: 28px 90px 1fr 1.6fr 140px 110px 1fr 80px;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px 8px 0 0;
+  align-items: center;
+}
+
+.caseList {
+  border: 1px solid #E5E7EB;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.caseItem {
+  border-bottom: 1px solid #E5E7EB;
+  background: #fff;
+  transition: background 0.1s;
+}
+
+.caseItem:last-child { border-bottom: none; }
+.caseItem:hover > .caseRow { background: #FAFAFA; }
+.caseItemExpanded > .caseRow { background: #F8F7FF; }
+
+.caseRow {
+  display: grid;
+  grid-template-columns: 28px 90px 1fr 1.6fr 140px 110px 1fr 80px;
+  gap: 12px;
+  padding: 14px 16px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkWrap {
+  display: flex;
+  align-items: center;
+}
+
+.checkWrap input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.checkPlaceholder { width: 16px; height: 16px; display: inline-block; }
+
+.caseId { font-size: 13px; font-weight: 600; color: #5651BD; font-family: monospace; }
+.caseClient { font-size: 14px; color: #18162F; font-weight: 500; }
+.caseProcedure { font-size: 13px; color: #374151; }
+
+.caseDos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.daysOut { font-size: 11px; color: #9CA3AF; }
+
+.caseTotal { font-size: 14px; font-weight: 600; color: #18162F; }
+.colRight { text-align: right; }
+
+/* Urgency badges */
+.urgencyBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.urgency_critical { background: #FEF2F2; color: #DC2626; }
+.urgency_urgent { background: #FFF7ED; color: #EA580C; }
+.urgency_due { background: #FFF3CD; color: #B45309; }
+.urgency_upcoming { background: #EFF6FF; color: #2563EB; }
+.urgency_future { background: #F3F4F6; color: #6B7280; }
+.urgency_invoiced { background: #EFF6FF; color: #2563EB; }
+.urgency_paid { background: #F0FDF4; color: #16A34A; }
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.markPaidBtn {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #15803D;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.markPaidBtn:hover { background: #DCFCE7; }
+
+.expandBtn {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px;
+}
+
+/* Case detail (expanded) */
+.caseDetail {
+  border-top: 1px solid #E0DEFB;
+  background: #FAFAFA;
+  padding: 0 16px 16px 56px;
+}
+
+.caseDetailInner {
+  padding-top: 16px;
+}
+
+.detailTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #18162F;
+  margin-bottom: 2px;
+}
+
+.detailNote {
+  font-size: 11px;
+  color: #9CA3AF;
+  margin-bottom: 16px;
+}
+
+/* Line items */
+.lineItemList {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  max-width: 480px;
+}
+
+.lineItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.lineItem:last-child { border-bottom: none; }
+
+.lineItemDeduction {
+  color: #9CA3AF;
+}
+
+.lineItemDeduction span:last-child { color: #6B7280; }
+
+.lineItemTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #18162F;
+  border-top: 2px solid #E5E7EB;
+  margin-top: 4px;
+}
+
+.w2Badge {
+  background: #FEF9C3;
+  color: #713F12;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Case timeline (per case status steps) */
+.caseTimeline {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+}
+
+.caseTimelineStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.caseTimelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.caseTimelineStepDone .caseTimelineDot { background: #16A34A; }
+.caseTimelineStepActive .caseTimelineDot { background: #5651BD; box-shadow: 0 0 0 3px #E0DEFB; }
+.caseTimelineStepPending .caseTimelineDot { background: #D1D5DB; }
+
+.caseTimelineLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.caseTimelineStepDone .caseTimelineLabel { color: #16A34A; }
+.caseTimelineStepActive .caseTimelineLabel { color: #5651BD; }
+.caseTimelineStepPending .caseTimelineLabel { color: #9CA3AF; }
+
+.caseTimelineSub { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+
+/* Action bar */
+.actionBar {
+  position: sticky;
+  bottom: 0;
+  background: #18162F;
+  color: #fff;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-radius: 12px 12px 0 0;
+  margin-top: 24px;
+}
+
+.actionBarSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.actionBarTotal {
+  font-size: 20px;
+  font-weight: 700;
+  color: #C5C1F5;
+}
+
+.actionBarNote {
+  flex: 1;
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-left: 8px;
+}
+
+/* Reconciliation */
+.reconHeader { margin-bottom: 20px; }
+
+.reconDesc {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.reconCard {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+.reconCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.reconCaseId { font-size: 13px; font-weight: 700; color: #5651BD; font-family: monospace; }
+.reconClient { font-size: 15px; font-weight: 600; color: #18162F; margin-top: 2px; }
+.reconProcedure { font-size: 13px; color: #6B7280; margin-top: 2px; }
+
+.reconStatusBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.reconStatusPending { background: #FFF7ED; color: #EA580C; }
+.reconStatusDone { background: #F0FDF4; color: #16A34A; }
+
+.reconGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.reconGridLabel { font-size: 11px; color: #9CA3AF; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.reconGridValue { font-size: 14px; color: #18162F; margin-top: 4px; }
+
+.reconAmounts {
+  background: #F9FAFB;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  max-width: 480px;
+}
+
+.reconAmountRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #374151;
+  padding: 4px 0;
+}
+
+.reconDeltaRow {
+  font-weight: 700;
+  font-size: 14px;
+  border-top: 1px solid #E5E7EB;
+  margin-top: 4px;
+  padding-top: 8px;
+}
+
+.reconDeltaCredit { color: #16A34A; }
+.reconDeltaCharge { color: #DC2626; }
+
+.reconAction { }
+
+.emptyState {
+  text-align: center;
+  color: #9CA3AF;
+  padding: 48px;
+  font-size: 14px;
+}

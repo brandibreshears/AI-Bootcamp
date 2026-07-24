@@ -16,6 +16,9 @@ import OrbitCheck from './pages/Accumulator/OrbitCheck/OrbitCheck';
 import ClientBillingTool from './pages/Billing/ClientBillingTool';
 import MemberAccumulators from './pages/Members/MemberAccumulators';
 import SurgeryOps from './pages/Billing/SurgeryOps';
+import ClientSetupWizard from './pages/Billing/ClientSetupWizard';
+import SurgeryBillingRun from './pages/Billing/SurgeryBillingRun';
+import MonthlyBillingRun from './pages/Billing/MonthlyBillingRun';
 
 export default function App() {
   return (
@@ -33,6 +36,9 @@ export default function App() {
           <Route path="billing/approvals" element={<ApprovalQueue />} />
           <Route path="billing/approvals/:id" element={<InvoiceApprovalDetail />} />
           <Route path="billing/client-invoicing" element={<ClientBillingTool />} />
+          <Route path="billing/client-setup" element={<ClientSetupWizard />} />
+          <Route path="billing/run/surgery" element={<SurgeryBillingRun />} />
+          <Route path="billing/run/monthly" element={<MonthlyBillingRun />} />
           <Route path="billing/surgery-ops" element={<SurgeryOps />} />
           <Route path="settings" element={<Settings />} />
           <Route path="client/cost-share/surgery" element={<SurgeryCostShare />} />
