@@ -14,6 +14,7 @@ import InvoiceApprovalDetail from './pages/Billing/InvoiceApprovalDetail';
 import SurgeryCostShare from './pages/Client/SurgeryCostShare/SurgeryCostShare';
 import OrbitCheck from './pages/Accumulator/OrbitCheck/OrbitCheck';
 import ClientBillingTool from './pages/Billing/ClientBillingTool';
+import MemberAccumulators from './pages/Members/MemberAccumulators';
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="client/cost-share/surgery" element={<SurgeryCostShare />} />
           <Route path="accumulator/orbit-check" element={<OrbitCheck />} />
+          <Route path="members/accumulators" element={<MemberAccumulators />} />
         </Route>
       </Routes>
     </BrowserRouter>
