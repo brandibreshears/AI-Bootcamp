@@ -1,0 +1,472 @@
+.page {
+  padding: 32px 40px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 24px;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: #5651BD;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0 0 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.headerMeta {
+  display: flex;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.metaStat {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-align: center;
+  min-width: 140px;
+}
+
+.metaValue {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #18162F;
+}
+
+.metaLabel {
+  display: block;
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+/* Phase progress */
+.phaseBar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 20px 32px;
+}
+
+.phaseStep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.phaseCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E5E7EB;
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.phaseStepActive .phaseCircle {
+  background: #5651BD;
+  color: #fff;
+}
+
+.phaseStepDone .phaseCircle {
+  background: #16A34A;
+  color: #fff;
+}
+
+.phaseLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #9CA3AF;
+}
+
+.phaseStepActive .phaseLabel { color: #18162F; font-weight: 600; }
+.phaseStepDone .phaseLabel { color: #16A34A; }
+
+.phaseConnector {
+  height: 2px;
+  width: 60px;
+  background: #E5E7EB;
+  flex-shrink: 0;
+  margin: 0 16px;
+  transition: background 0.2s;
+}
+
+.phaseConnectorDone { background: #16A34A; }
+
+/* Phase content */
+.phaseContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.phaseHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.phaseTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0 0 6px;
+}
+
+.phaseDesc {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+  max-width: 600px;
+}
+
+/* Stale warning */
+.staleWarning {
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #92400E;
+}
+
+/* Eligibility grid */
+.eligibilityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.eligCard {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.eligCardStale { border-color: #FED7AA; background: #FFFBF5; }
+.eligCardMissing { border-color: #FECACA; background: #FFF5F5; }
+
+.eligCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.eligClient { font-size: 15px; font-weight: 600; color: #18162F; }
+
+.eligBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.eligBadge_current { background: #F0FDF4; color: #16A34A; }
+.eligBadge_stale { background: #FFF7ED; color: #EA580C; }
+.eligBadge_missing { background: #FEF2F2; color: #DC2626; }
+
+.eligStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.eligStat { text-align: center; }
+.eligStatValue { font-size: 16px; font-weight: 700; color: #18162F; }
+.eligStatLabel { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+.eligMonthly { color: #5651BD; }
+
+.eligMeta {
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-bottom: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.eligMetaStale { color: #EA580C; }
+
+.eligCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eligTerms { font-size: 11px; color: #9CA3AF; }
+
+.eligApproveBtn {
+  background: #5651BD;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eligApproveBtn:hover { background: #4340A8; }
+
+.eligApprovedBadge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16A34A;
+}
+
+.eligExcludeNote { font-size: 12px; color: #9CA3AF; font-style: italic; }
+
+/* Invoice sections */
+.invoiceSection {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.invoiceSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.invoiceSectionTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: #18162F;
+  margin: 0 0 4px;
+}
+
+.invoiceSectionDesc {
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.invoiceSectionDesc code {
+  background: #F3F4F6;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.invoiceCards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.invoiceCard {
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.invoiceCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.invoiceCardClient { font-size: 15px; font-weight: 600; color: #18162F; }
+.invoiceCardNum { font-size: 12px; color: #9CA3AF; font-family: monospace; margin-top: 2px; }
+
+.invoiceApproved { font-size: 12px; font-weight: 600; color: #16A34A; }
+
+.invoiceApproveBtn {
+  background: #5651BD;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.invoiceApproveBtn:hover { background: #4340A8; }
+
+.invoiceLineHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.invoiceLine {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 9px 16px;
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid #F9FAFB;
+}
+
+.invoiceLineTotal { font-weight: 600; color: #18162F; }
+.colRight { text-align: right; }
+
+.invoiceCardTotal {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #18162F;
+  background: #F8F7FF;
+  border-top: 2px solid #E0DEFB;
+}
+
+/* Generate phase */
+.generateSection {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 28px 32px;
+}
+
+.generateSummary {
+  margin-top: 24px;
+  margin-bottom: 32px;
+}
+
+.generateSummaryTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #18162F;
+  margin-bottom: 12px;
+}
+
+.generateTable {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.generateTableHeader,
+.generateTableRow,
+.generateTableFooter {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 1fr 1.2fr 1fr 1fr;
+  gap: 12px;
+  padding: 10px 16px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.generateTableHeader {
+  background: #F9FAFB;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.generateTableRow {
+  border-bottom: 1px solid #F3F4F6;
+  color: #374151;
+}
+
+.generateTableRow:last-child { border-bottom: none; }
+
+.generateTableFooter {
+  background: #F9FAFB;
+  font-weight: 700;
+  color: #18162F;
+  border-top: 2px solid #E5E7EB;
+}
+
+.generateClient { font-weight: 600; color: #18162F; }
+.generateInvNum { font-size: 11px; font-family: monospace; color: #6B7280; }
+.generateRowTotal { font-weight: 600; }
+.generateGrandTotal { font-size: 15px; color: #5651BD; }
+
+/* Success state */
+.generateSuccess {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.generateSuccessIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #16A34A;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.generateSuccessTitle { font-size: 16px; font-weight: 700; color: #166534; margin-bottom: 6px; }
+.generateSuccessDesc { font-size: 14px; color: #166534; line-height: 1.5; margin-bottom: 12px; }
+.generateSuccessActions { }
+
+/* Phase nav */
+.phaseNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+}
