@@ -95,6 +95,14 @@ export function Sidebar() {
           Client Invoicing
         </NavLink>
 
+        <NavLink
+          to="/billing/surgery-ops"
+          className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+        >
+          <span className={styles.navIcon}><BillingIcon /></span>
+          Surgery Ops
+        </NavLink>
+
         {/* Admin */}
         <div className={styles.navSection}>Admin</div>
 
