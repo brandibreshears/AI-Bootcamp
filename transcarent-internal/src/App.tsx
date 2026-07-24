@@ -12,6 +12,8 @@ import GenerateInvoice from './pages/Billing/GenerateInvoice';
 import ApprovalQueue from './pages/Billing/ApprovalQueue';
 import InvoiceApprovalDetail from './pages/Billing/InvoiceApprovalDetail';
 import SurgeryCostShare from './pages/Client/SurgeryCostShare/SurgeryCostShare';
+import OrbitCheck from './pages/Accumulator/OrbitCheck/OrbitCheck';
+import ClientBillingTool from './pages/Billing/ClientBillingTool';
 
 export default function App() {
   return (
@@ -28,8 +30,10 @@ export default function App() {
           <Route path="billing/generate" element={<GenerateInvoice />} />
           <Route path="billing/approvals" element={<ApprovalQueue />} />
           <Route path="billing/approvals/:id" element={<InvoiceApprovalDetail />} />
+          <Route path="billing/client-invoicing" element={<ClientBillingTool />} />
           <Route path="settings" element={<Settings />} />
           <Route path="client/cost-share/surgery" element={<SurgeryCostShare />} />
+          <Route path="accumulator/orbit-check" element={<OrbitCheck />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -65,6 +65,36 @@ export function Sidebar() {
           Member Cost Share
         </NavLink>
 
+        {/* Accumulator */}
+        <div className={styles.navSection}>Accumulator</div>
+
+        <NavLink
+          to="/accumulator/orbit-check"
+          className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+        >
+          <span className={styles.navIcon}><ClientIcon /></span>
+          Orbit Data Check
+        </NavLink>
+
+        {/* Billing */}
+        <div className={styles.navSection}>Billing</div>
+
+        <NavLink
+          to="/billing"
+          className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+        >
+          <span className={styles.navIcon}><BillingIcon /></span>
+          Member Payments
+        </NavLink>
+
+        <NavLink
+          to="/billing/client-invoicing"
+          className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+        >
+          <span className={styles.navIcon}><BillingIcon /></span>
+          Client Invoicing
+        </NavLink>
+
         {/* Admin */}
         <div className={styles.navSection}>Admin</div>
 
