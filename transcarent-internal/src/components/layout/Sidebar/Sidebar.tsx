@@ -54,6 +54,17 @@ export function Sidebar() {
           Dashboard
         </NavLink>
 
+        {/* Member */}
+        <div className={styles.navSection}>Member</div>
+
+        <NavLink
+          to="/members/accumulators"
+          className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+        >
+          <span className={styles.navIcon}><DocumentIcon /></span>
+          Accumulator Tool
+        </NavLink>
+
         {/* Client */}
         <div className={styles.navSection}>Client</div>
 
